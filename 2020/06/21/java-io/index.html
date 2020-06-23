@@ -1,0 +1,686 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><title>IO流 | Uncle He</title><meta name="description" content="IO流概念I&#x2F;O是输入&#x2F;输出(Input&#x2F;Output) 的缩写， I&#x2F;O技术是非常实用的技术，如读&#x2F;写文件，网络通讯等等。Java的IO支持通过java.io包下的类和接口来支持。  I(Input输入)，从别的地方（文件、键盘、网络、内存等）读取数据到当前程序中  O(Output输出)，从程序把数据写&#x2F;输出到文件、屏幕（控制台）、网络、内存等中   java.io.File类File类是ja"><meta name="keywords" content="IO"><meta name="author" content="Uncle He"><meta name="copyright" content="Uncle He"><meta name="format-detection" content="telephone=no"><link rel="shortcut icon" href="https://cdn.jsdelivr.net/gh/uncle-he/blog-resource/img/favicon.ico"><meta http-equiv="Cache-Control" content="no-transform"><meta http-equiv="Cache-Control" content="no-siteapp"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="dns-prefetch" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="https://fonts.googleapis.com" crossorigin="crossorigin"/><link rel="dns-prefetch" href="https://fonts.googleapis.com"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="dns-prefetch" href="//busuanzi.ibruce.info"/><meta name="twitter:card" content="summary"><meta name="twitter:title" content="IO流"><meta name="twitter:description" content="IO流概念I&#x2F;O是输入&#x2F;输出(Input&#x2F;Output) 的缩写， I&#x2F;O技术是非常实用的技术，如读&#x2F;写文件，网络通讯等等。Java的IO支持通过java.io包下的类和接口来支持。  I(Input输入)，从别的地方（文件、键盘、网络、内存等）读取数据到当前程序中  O(Output输出)，从程序把数据写&#x2F;输出到文件、屏幕（控制台）、网络、内存等中   java.io.File类File类是ja"><meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/uncle-he/blog-resource/img/java.jpeg"><meta property="og:type" content="article"><meta property="og:title" content="IO流"><meta property="og:url" content="https://www.unclehe.net/2020/06/21/java-io/"><meta property="og:site_name" content="Uncle He"><meta property="og:description" content="IO流概念I&#x2F;O是输入&#x2F;输出(Input&#x2F;Output) 的缩写， I&#x2F;O技术是非常实用的技术，如读&#x2F;写文件，网络通讯等等。Java的IO支持通过java.io包下的类和接口来支持。  I(Input输入)，从别的地方（文件、键盘、网络、内存等）读取数据到当前程序中  O(Output输出)，从程序把数据写&#x2F;输出到文件、屏幕（控制台）、网络、内存等中   java.io.File类File类是ja"><meta property="og:image" content="https://cdn.jsdelivr.net/gh/uncle-he/blog-resource/img/java.jpeg"><meta property="article:published_time" content="2020-06-21T06:14:40.000Z"><meta property="article:modified_time" content="2020-06-20T08:11:47.934Z"><script src="https://cdn.jsdelivr.net/npm/js-cookie/dist/js.cookie.min.js"></script><script>var autoChangeMode = 'false'
+var t = Cookies.get("theme")
+if (autoChangeMode == '1'){
+  var isDarkMode = window.matchMedia("(prefers-color-scheme: dark)").matches
+  var isLightMode = window.matchMedia("(prefers-color-scheme: light)").matches
+  var isNotSpecified = window.matchMedia("(prefers-color-scheme: no-preference)").matches
+  var hasNoSupport = !isDarkMode && !isLightMode && !isNotSpecified
+
+  if (t === undefined){
+    if (isLightMode) activateLightMode()
+    else if (isDarkMode) activateDarkMode()
+    else if (isNotSpecified || hasNoSupport){
+      console.log('You specified no preference for a color scheme or your browser does not support it. I Schedule dark mode during night time.')
+      var now = new Date()
+      var hour = now.getHours()
+      var isNight = hour < 6 || hour >= 18
+      isNight ? activateDarkMode() : activateLightMode()
+  }
+  } else if (t == 'light') activateLightMode()
+  else activateDarkMode()
+
+} else if (autoChangeMode == '2'){
+  now = new Date();
+  hour = now.getHours();
+  isNight = hour < 6 || hour >= 18
+  if(t === undefined) isNight? activateDarkMode() : activateLightMode()
+  else if (t === 'light') activateLightMode()
+  else activateDarkMode() 
+} else {
+  if ( t == 'dark' ) activateDarkMode()
+  else if ( t == 'light') activateLightMode()
+}
+
+function activateDarkMode(){
+  document.documentElement.setAttribute('data-theme', 'dark')
+  if (document.querySelector('meta[name="theme-color"]') !== null){
+    document.querySelector('meta[name="theme-color"]').setAttribute('content','#000')
+  }
+}
+function activateLightMode(){
+  document.documentElement.setAttribute('data-theme', 'light')
+  if (document.querySelector('meta[name="theme-color"]') !== null){
+  document.querySelector('meta[name="theme-color"]').setAttribute('content','#fff')
+  }
+}</script><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.css"><link rel="canonical" href="https://www.unclehe.net/2020/06/21/java-io/"><link rel="next" title="泛型" href="https://www.unclehe.net/2020/06/20/java-%3CT%3E/"><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Titillium+Web"><script>var GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"search.xml","languages":{"hits_empty":"找不到您查询的内容:${query}"}},
+  translate: {"defaultEncoding":1,"translateDelay":0,"cookieDomain":"https://unclehe.net/","msgToTraditionalChinese":"繁","msgToSimplifiedChinese":"简"},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  bookmark: {
+    message_prev: '按',
+    message_next: '键将本页加入书签'
+  },
+  runtime_unit: '天',
+  runtime: true,
+  copyright: {"languages":{"author":"作者: Uncle He","link":"链接: ","source":"来源: Uncle He","info":"著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。"}},
+  ClickShowText: undefined,
+  medium_zoom: true,
+  fancybox: false,
+  Snackbar: {"bookmark":{"message_prev":"按","message_next":"键将本页加入书签"},"chs_to_cht":"你已切换为繁体","cht_to_chs":"你已切换为简体","day_to_night":"你已切换为深色模式","night_to_day":"你已切换为浅色模式","bgLight":"#49b1f5","bgDark":"#2d3035","position":"top-right"},
+  baiduPush: false,
+  highlightCopy: true,
+  highlightLang: true,
+  highlightShrink: 'true',
+  isFontAwesomeV5: true,
+  isPhotoFigcaption: false,
+  islazyload: true,
+  isanchor: false
+  
+}</script><script>var GLOBAL_CONFIG_SITE = { 
+  isPost: true,
+  isHome: false,
+  isSidebar: true  
+  }</script><noscript><style>
+#page-header {
+  opacity: 1
+}
+.justified-gallery img{
+  opacity: 1
+}
+</style></noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/uncle-he/blog-resource/css/customcss.css"><meta name="generator" content="Hexo 4.2.1"></head><body><div id="mobile-sidebar"><div id="menu_mask"></div><div id="mobile-sidebar-menus"><div class="mobile_author_icon"><img class="avatar-img" src="https://cdn.jsdelivr.net/gh/uncle-he/blog-resource/img/avatar.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="mobile_post_data"><div class="mobile_data_item is-center"><div class="mobile_data_link"><a href="/archives/"><div class="headline">文章</div><div class="length_num">12</div></a></div></div><div class="mobile_data_item is-center">      <div class="mobile_data_link"><a href="/tags/"><div class="headline">标签</div><div class="length_num">9</div></a></div></div><div class="mobile_data_item is-center">     <div class="mobile_data_link"><a href="/categories/"><div class="headline">分类</div><div class="length_num">11</div></a></div></div></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fa fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fa fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fa fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fa fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fa fa-heart"></i><span> 关于</span></a></div><div class="menus_item"><a class="site-page" href="https://unclehe.gitee.io" target="_blank" rel="noopener"><i class="fa-fw fa fa-toolbox"></i><span> 百宝箱</span></a></div><div class="menus_item"><a class="site-page" href="/messageboard/"><i class="fa-fw fa fa-coffee"></i><span> 留言板</span></a></div></div></div></div><i class="fa fa-arrow-right on" id="toggle-sidebar" aria-hidden="true">     </i><div id="sidebar"><div class="sidebar-toc"><div class="sidebar-toc__title">目录</div><div class="sidebar-toc__progress"><span class="progress-notice">你已经读了</span><span class="progress-num">0</span><span class="progress-percentage">%</span><div class="sidebar-toc__progress-bar">     </div></div><div class="sidebar-toc__content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#IO流概念"><span class="toc-number">1.</span> <span class="toc-text">IO流概念</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#java-io-File类"><span class="toc-number">2.</span> <span class="toc-text">java.io.File类</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#路径名"><span class="toc-number">2.1.</span> <span class="toc-text">路径名</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#获取常规信息等方法"><span class="toc-number">2.2.</span> <span class="toc-text">获取常规信息等方法</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#操作文件"><span class="toc-number">2.3.</span> <span class="toc-text">操作文件</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#创建文件"><span class="toc-number">2.3.1.</span> <span class="toc-text">创建文件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#删除文件"><span class="toc-number">2.3.2.</span> <span class="toc-text">删除文件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#文件重命名"><span class="toc-number">2.3.3.</span> <span class="toc-text">文件重命名</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#操作目录"><span class="toc-number">2.4.</span> <span class="toc-text">操作目录</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#创建目录"><span class="toc-number">2.4.1.</span> <span class="toc-text">创建目录</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#列出目录内容"><span class="toc-number">2.4.2.</span> <span class="toc-text">列出目录内容</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#删除目录"><span class="toc-number">2.4.3.</span> <span class="toc-text">删除目录</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#重命名目录"><span class="toc-number">2.4.4.</span> <span class="toc-text">重命名目录</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#IO流的分类与设计"><span class="toc-number">3.</span> <span class="toc-text">IO流的分类与设计</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#java-io包中的IO流"><span class="toc-number">3.1.</span> <span class="toc-text">java.io包中的IO流</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#常见IO流"><span class="toc-number">3.2.</span> <span class="toc-text">常见IO流</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#抽象基类的常用方法"><span class="toc-number">3.3.</span> <span class="toc-text">抽象基类的常用方法</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#InputStream"><span class="toc-number">3.3.1.</span> <span class="toc-text">InputStream</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#OutputStream"><span class="toc-number">3.3.2.</span> <span class="toc-text">OutputStream</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Reader"><span class="toc-number">3.3.3.</span> <span class="toc-text">Reader</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Writer"><span class="toc-number">3.3.4.</span> <span class="toc-text">Writer</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#IO流使用步骤"><span class="toc-number">3.3.5.</span> <span class="toc-text">IO流使用步骤</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#读取-接收数据的步骤"><span class="toc-number">3.3.5.1.</span> <span class="toc-text">读取&#x2F;接收数据的步骤</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#写-发送数据的步骤"><span class="toc-number">3.3.5.2.</span> <span class="toc-text">写&#x2F;发送数据的步骤</span></a></li></ol></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#文件IO流"><span class="toc-number">4.</span> <span class="toc-text">文件IO流</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#缓冲IO流"><span class="toc-number">5.</span> <span class="toc-text">缓冲IO流</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#编码与解码的IO流（转换流）"><span class="toc-number">6.</span> <span class="toc-text">编码与解码的IO流（转换流）</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#数据IO流"><span class="toc-number">7.</span> <span class="toc-text">数据IO流</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#对象IO流"><span class="toc-number">8.</span> <span class="toc-text">对象IO流</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#其他的IO流相关内容"><span class="toc-number">9.</span> <span class="toc-text">其他的IO流相关内容</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#JDK1-7新特性：try…with…resources"><span class="toc-number">10.</span> <span class="toc-text">JDK1.7新特性：try…with…resources</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#NIO"><span class="toc-number">11.</span> <span class="toc-text">NIO</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Path接口"><span class="toc-number">11.1.</span> <span class="toc-text">Path接口</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Files工具类"><span class="toc-number">11.2.</span> <span class="toc-text">Files工具类</span></a></li></ol></li></ol></div></div></div><div id="body-wrap"><div class="post-bg" id="nav" style="background-image: url(https://cdn.jsdelivr.net/gh/uncle-he/blog-resource/img/java.jpeg)"><div id="page-header"><span class="pull_left" id="blog_name"><a class="blog_title" id="site-name" href="/">Uncle He</a></span><span class="pull_right menus"><div id="search_button"><a class="site-page social-icon search"><i class="fa fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fa fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fa fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fa fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fa fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fa fa-heart"></i><span> 关于</span></a></div><div class="menus_item"><a class="site-page" href="https://unclehe.gitee.io" target="_blank" rel="noopener"><i class="fa-fw fa fa-toolbox"></i><span> 百宝箱</span></a></div><div class="menus_item"><a class="site-page" href="/messageboard/"><i class="fa-fw fa fa-coffee"></i><span> 留言板</span></a></div></div><span class="toggle-menu close"><a class="site-page"><i class="fa fa-bars fa-fw" aria-hidden="true"></i></a></span></span></div><div id="post-info"><div id="post-title"><div class="posttitle">IO流</div></div><div id="post-meta"><div class="meta-firstline"><time class="post-meta__date"><span class="post-meta__date-created" title="发表于 2020-06-21 14:14:40"><i class="fa fa-calendar" aria-hidden="true"></i> 发表于 2020-06-21</span><span class="post-meta__separator">|</span><span class="post-meta__date-updated" title="更新于 2020-06-20 16:11:47"><i class="fa fa-history" aria-hidden="true"></i> 更新于 2020-06-20</span></time><span class="post-meta__categories"><span class="post-meta__separator">|</span><i class="fa fa-inbox post-meta__icon" aria-hidden="true"></i><a class="post-meta__categories" href="/categories/%E8%87%AA%E5%AD%A6Java/">自学Java</a><i class="fa fa-angle-right post-meta__separator" aria-hidden="true"></i><i class="fa fa-inbox post-meta__icon" aria-hidden="true"></i><a class="post-meta__categories" href="/categories/%E8%87%AA%E5%AD%A6Java/IO%E6%B5%81/">IO流</a></span></div><div class="meta-secondline"> <span class="post-meta-wordcount"><i class="post-meta__icon far fa-file-word" aria-hidden="true"></i><span>字数总计:</span><span class="word-count">6.9k</span><span class="post-meta__separator">|</span><i class="post-meta__icon far fa-clock" aria-hidden="true"></i><span>阅读时长: 25 分钟</span></span></div><div class="meta-thirdline"><span class="post-meta-pv-cv"><span class="post-meta__separator">|</span><i class="fa fa-eye post-meta__icon" aria-hidden="true"> </i><span>阅读量:</span><span id="busuanzi_value_page_pv"></span></span><span class="post-meta-commentcount"><span class="post-meta__separator">|</span><i class="post-meta__icon far fa-comments" aria-hidden="true"></i><span>评论数:</span><a href="/2020/06/21/java-io/#post-comment" itemprop="discussionUrl"><span class="valine-comment-count comment-count" data-xid="/2020/06/21/java-io/" itemprop="commentCount"></span></a></span></div></div></div></div><main class="layout_post" id="content-inner"><article id="post"><div class="post-content" id="article-container"><h1 id="IO流概念"><a href="#IO流概念" class="headerlink" title="IO流概念"></a>IO流概念</h1><p>I/O是输入/输出(Input/Output) 的缩写， I/O技术是非常实用的技术，如读/写文件，网络通讯等等。Java的IO支持通过java.io包下的类和接口来支持。</p>
+<ul>
+<li><p>I(Input输入)，从别的地方（文件、键盘、网络、内存等）读取数据到当前程序中</p>
+</li>
+<li><p>O(Output输出)，从程序把数据写/输出到文件、屏幕（控制台）、网络、内存等中</p>
+</li>
+</ul>
+<h1 id="java-io-File类"><a href="#java-io-File类" class="headerlink" title="java.io.File类"></a>java.io.File类</h1><p>File类是java.io包下代表与平台无关的文件和目录，也就是说如果希望在程序中操作文件和目录都可以通过File类来完成，File类能新建、删除、重命名文件和目录。</p>
+<p>在API中File的解释是文件和目录路径名的抽象表示形式，即File类是文件或目录的路径，而不是文件本身，因此File类不能直接访问文件内容本身，如果需要访问文件内容本身，则需要使用输入/输出流。</p>
+<h2 id="路径名"><a href="#路径名" class="headerlink" title="路径名"></a>路径名</h2><p>File类可以使用文件路径字符串来创建File实例，该文件路径字符串既可以是绝对路径，也可以是相对路径，默认情况下，系统总是依据用户的工作路径来解释相对路径，这个路径由系统属性“user.dir”指定，通常也就是运行Java虚拟机时所作的路径。</p>
+<ul>
+<li>String getName()：返回此File对象的所表示的文件名（返回最后一级）</li>
+<li>String getPath()：返回此File对象所对应的路径名。</li>
+<li>String getAbsolutePath()：返回此File对象所对应的绝对路径名。</li>
+<li>File getAbsoluteFile()：返回此File对象所对应的绝对路径名所对应的File对象</li>
+<li>String getCanonicalPath()：返回此File对象所对应的规范路径名。所谓规范路径名，即对路径中的“..”等进行解析后的路径名。</li>
+<li>File getCanonicalFile()：返回此File对象所对应的规范路径名所对应的File对象</li>
+<li>String getParent()：返回此File对象的父目录名</li>
+<li>File getParentFile()：返回此File对象的父目录名所对应的File对象</li>
+</ul>
+<h2 id="获取常规信息等方法"><a href="#获取常规信息等方法" class="headerlink" title="获取常规信息等方法"></a>获取常规信息等方法</h2><p><strong>文件和目录检测方法：</strong></p>
+<ul>
+<li><p>boolean exists()：判断File对象对应的文件或目录是否存在</p>
+</li>
+<li><p>canRead()：判断File对象对应的文件或目录是否可读</p>
+</li>
+<li><p>canWrite()：判断File对象对应的文件或目录是否可写</p>
+</li>
+<li><p>isHidden()：判断File对象对应的文件或目录是否是否隐藏</p>
+</li>
+<li><p>isFile()：判断File对象对应的是否是文件</p>
+</li>
+<li><p>isDirectory()：判断File对象对应的是否是目录</p>
+</li>
+<li><p>isAbsolute()：判断File对象对应的文件或目录是否是绝对路径</p>
+</li>
+</ul>
+<p><strong>获取常规信息：</strong></p>
+<ul>
+<li><p>long lastModified()：返回File对象对应的文件或目录的最后修改时间（毫秒值）</p>
+</li>
+<li><p>long length()：返回File对象对应的文件的内容的长度（字节数），<strong>如果File对象对应的是目录，则结果是不确定的</strong></p>
+</li>
+</ul>
+<p>以上都是对应于File对象的属性信息，如果File对象对应的文件或目录不存在，返回的都是对应属性的默认值，例如：length()返回为0，isFile()和isDirectory()返回为false等。</p>
+<h2 id="操作文件"><a href="#操作文件" class="headerlink" title="操作文件"></a>操作文件</h2><h3 id="创建文件"><a href="#创建文件" class="headerlink" title="创建文件"></a>创建文件</h3><ol>
+<li><p>创建文件：boolean createNewFile() throws IOException</p>
+<p>如果指定的文件不存在并成功地创建，则返回 true；如果指定的文件已经存在，则返回 false。</p>
+</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">test5</span><span class="params">()</span> <span class="keyword">throws</span> IOException</span>&#123;</span><br><span class="line">  File file = <span class="keyword">new</span> File(<span class="string">"d:/unclehe/javase/HelloIO.java"</span>);</span><br><span class="line">  file.createNewFile();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>创建临时文件，通常会结合deleteOnExit()使用</li>
+</ol>
+<ul>
+<li><p>public static File createTempFile(String prefix,String suffix) throws IOException在默认临时文件目录中创建一个空文件，使用给定前缀和后缀生成其名称。调用此方法等同于调用 createTempFile(prefix, suffix, null)。</p>
+<ul>
+<li>n prefix - 用于生成文件名的前缀字符串；必须至少三个字符。</li>
+<li>suffix - 用于生成文件名的后缀字符串；如果为 null，默认为 “.tmp”</li>
+</ul>
+</li>
+<li><p>public static File createTempFile(String prefix,String suffix,File directory)throws IOException在指定目录中创建一个新的空文件，使用给定的前缀和后缀字符串生成其名称。</p>
+<ul>
+<li>prefix - 用于生成文件名的前缀字符串；必须至少三个字符。</li>
+<li>suffix - 用于生成文件名的后缀字符串；如果为 null，默认为 “.tmp”</li>
+<li>directory - 将创建的文件所在的目录；如果使用默认临时文件目录，则该参数为 null </li>
+</ul>
+</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">test6</span><span class="params">()</span> <span class="keyword">throws</span> IOException</span>&#123;</span><br><span class="line">  File tempFile = File.createTempFile(<span class="string">"Hello"</span>, <span class="string">".tmp"</span>);</span><br><span class="line">  System.out.println(tempFile.getAbsolutePath());</span><br><span class="line">  <span class="comment">//C:\Users\Irene\AppData\Local\Temp\Hello2541030191749214481.tmp</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="删除文件"><a href="#删除文件" class="headerlink" title="删除文件"></a>删除文件</h3><ul>
+<li><p>boolean delete() 当且仅当成功删除文件时，返回 true；否则返回 false。</p>
+</li>
+<li><p>public void deleteOnExit()：当退出JVM时，删除文件，一般用于删除临时文件</p>
+</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">deleteOnExit</span><span class="params">()</span>：当退出JVM时，删除文件，一般用于删除临时文件</span></span><br><span class="line"><span class="function">  @Test</span></span><br><span class="line"><span class="function">  <span class="keyword">public</span> <span class="keyword">void</span> <span class="title">test7</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  File file = <span class="keyword">new</span> File(<span class="string">"d:/unclehe/javase/HelloIO.java"</span>);</span><br><span class="line">  file.delete();</span><br><span class="line">&#125;</span><br><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">test8</span><span class="params">()</span> <span class="keyword">throws</span> IOException</span>&#123;</span><br><span class="line">  File tempFile = File.createTempFile(<span class="string">"Hello"</span>, <span class="string">".tmp"</span>);</span><br><span class="line">  <span class="comment">//....省略代码</span></span><br><span class="line">  tempFile.deleteOnExit();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="文件重命名"><a href="#文件重命名" class="headerlink" title="文件重命名"></a>文件重命名</h3><ul>
+<li>boolean renameTo(File dest)：此方法行为的许多方面都是与平台有关的：重命名操作无法将一个文件从一个文件系统移动到另一个文件系统，该操作不是不可分的，如果已经存在具有目标抽象路径名的文件，那么该操作可能无法获得成功。应该始终检查返回值，以确保重命名操作成功。</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">test9</span><span class="params">()</span></span>&#123;</span><br><span class="line">  File src = <span class="keyword">new</span> File(<span class="string">"d:/unclehe/javase/HelloIO.java"</span>);</span><br><span class="line">  File dest = <span class="keyword">new</span> File(<span class="string">"d:/unclehe/javase/HelloFile.java"</span>);</span><br><span class="line">  src.renameTo(dest);</span><br><span class="line">&#125;</span><br><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">test10</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  File src = <span class="keyword">new</span> File(<span class="string">"d:/unclehe/javase/HelloIO.java"</span>);</span><br><span class="line">  File dest = <span class="keyword">new</span> File(<span class="string">"e:/HelloFile.java"</span>);</span><br><span class="line">  <span class="comment">//D盘和E盘相同的文件系统可以成功，例如都是NTFS。</span></span><br><span class="line">  src.renameTo(dest);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="操作目录"><a href="#操作目录" class="headerlink" title="操作目录"></a>操作目录</h2><h3 id="创建目录"><a href="#创建目录" class="headerlink" title="创建目录"></a>创建目录</h3><ul>
+<li><p>boolean mkdir() ：必须确保父目录存在，否则创建失败</p>
+</li>
+<li><p>boolean mkdirs()：如果父目录链不存在，会一同创建父目录链</p>
+</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">test1</span><span class="params">()</span></span>&#123;</span><br><span class="line">  File dir = <span class="keyword">new</span> File(<span class="string">"d:/unclehe/javase/io"</span>);</span><br><span class="line">  dir.mkdir();</span><br><span class="line">  <span class="comment">//如果d:/atguigu/javase不存在不会报错，只是没创建成功</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">test2</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  File dir = <span class="keyword">new</span> File(<span class="string">"d:/unclehe/javase/io"</span>);</span><br><span class="line">  dir.mkdirs();</span><br><span class="line">  <span class="comment">//如果d:/atguigu/javase不存在，会一并创建</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="列出目录内容"><a href="#列出目录内容" class="headerlink" title="列出目录内容"></a>列出目录内容</h3><ul>
+<li><p>public String[] list()列出当前目录的下级目录或文件的名称</p>
+</li>
+<li><p>public File[] listFiles() 列出当前目录的下级的目录或文件对应的File对象  </p>
+<p>配合递归可以列出下级的下级….</p>
+</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">test3</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  File dir = <span class="keyword">new</span> File(<span class="string">"d:/unclehe"</span>);</span><br><span class="line">  listSubFiles(dir);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">listSubFiles</span><span class="params">(File dir)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (dir != <span class="keyword">null</span> &amp;&amp; dir.isDirectory()) &#123;</span><br><span class="line">    File[] listFiles = dir.listFiles();</span><br><span class="line">    <span class="keyword">if</span> (listFiles != <span class="keyword">null</span>) &#123;</span><br><span class="line">      <span class="keyword">for</span> (File sub : listFiles) &#123;</span><br><span class="line">        listSubFiles(sub);</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  System.out.println(dir);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>public File[ ] listFiles (FileFilter filter) 返回所有满足指定过滤器的文件和目录。如果给定 filter 为 null，则接受所有路径名。否则，当且仅当在路径名上调用过滤器的 FileFilter.accept(java.io.File) 方法返回 true 时，该路径名才满足过滤器。如果当前File对象不表示一个目录，或者发生 I/O 错误，则返回 null。</li>
+<li>public File[ ] listFiles (FilenameFilter filter) 返回所有满足指定过滤器的文件和目录。如果给定 filter 为 null，则接受所有路径名。否则，当且仅当在路径名上调用过滤器的 FilenameFilter.accept(java.io.File, java.lang.String) 方法返回 true 时，该路径名才满足过滤器。如果当前File对象不表示一个目录，或者发生 I/O 错误，则返回 null。</li>
+<li>public static File[ ] listRoots() 列出可用的文件系统根。</li>
+</ul>
+<h3 id="删除目录"><a href="#删除目录" class="headerlink" title="删除目录"></a>删除目录</h3><ul>
+<li>boolean delete()：只能删除空目录。否则需要先将目录下的所有内容删除才能将该目录删除。</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">test6</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  File dir = <span class="keyword">new</span> File(<span class="string">"D:/unclehe/javase"</span>);</span><br><span class="line">  forceDeleteDir(dir);</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">forceDeleteDir</span><span class="params">(File dir)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (dir != <span class="keyword">null</span> &amp;&amp; dir.isDirectory()) &#123;</span><br><span class="line">    File[] listFiles = dir.listFiles();</span><br><span class="line">    <span class="keyword">if</span>(listFiles!=<span class="keyword">null</span>)&#123;</span><br><span class="line">      <span class="keyword">for</span> (File sub : listFiles) &#123;</span><br><span class="line">        forceDeleteDir(sub);</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  dir.delete();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="重命名目录"><a href="#重命名目录" class="headerlink" title="重命名目录"></a>重命名目录</h3><ul>
+<li>boolean renameTo(File dest)：如果是windows目录，只能在同一个盘下，不能从D盘移动到E盘。</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">test7</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  File dir = <span class="keyword">new</span> File(<span class="string">"D:/unclehe/javase"</span>);</span><br><span class="line">  File dest = <span class="keyword">new</span> File(<span class="string">"D:/unclehe/java代码"</span>);</span><br><span class="line">  dir.renameTo(dest);</span><br><span class="line">&#125;</span><br><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">test8</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  File dir = <span class="keyword">new</span> File(<span class="string">"D:/unclehe/javase"</span>);</span><br><span class="line">  File dest = <span class="keyword">new</span> File(<span class="string">"D:/temp"</span>);</span><br><span class="line">  dir.renameTo(dest);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h1 id="IO流的分类与设计"><a href="#IO流的分类与设计" class="headerlink" title="IO流的分类与设计"></a>IO流的分类与设计</h1><h2 id="java-io包中的IO流"><a href="#java-io包中的IO流" class="headerlink" title="java.io包中的IO流"></a>java.io包中的IO流</h2><p>java.io包中类太多了，简直是……“琳琅满目”“眼花缭乱”。你第一次（第二次，第三次，。。。）看到这些API时，“哦”愁眉苦脸时，放心，你不是唯一受到惊吓和困扰的人。但是，如果你好好梳理他们的关系，并掌握几个经典代表的使用方式，其他的也就等于掌握了。</p>
+<p><strong>第一：</strong>其实不管有多少种IO流，最基本的只有四个。</p>
+<p><strong>IO的四个超级父类，抽象基类</strong></p>
+<ul>
+<li><p>字节输入流：InputStream</p>
+</li>
+<li><p>字节输出流：OutputStream</p>
+</li>
+<li><p>字符输入流：Reader</p>
+</li>
+<li><p>字符输出流：Writer</p>
+</li>
+</ul>
+<p><strong>第二：</strong>IO流类的设计选用了“装饰者”设计模式，即IO流分为两大类，“被装饰”的组件和“装饰”的组件。</p>
+<p>例如：以InputStream为例</p>
+<p>其中FileInputStream、ByteArrayInputStream等是“被装饰”的组件，依次用来连接和读取“文件”、“内存中的字节数组”的等。</p>
+<p>而BufferedInputStream、DataInputStream、ObjectInputStream等是用来“装饰”的组件，依次是给其他InputStream的IO流提供装饰的辅助功能的，依次可以增加“提高效率的缓冲功能”、“按照Java数据类型读取数据的能力”、“读取并恢复Java对象的能力”等</p>
+<p>你会发现OutputStream、Reader、Writer系列的流设计方式也是一样的。</p>
+<p><strong>第三：</strong>IO流的选取可以通过以下几个分类来简化选取过程。</p>
+<p><strong>按照IO流的方向：</strong></p>
+<ul>
+<li><p>输入流和输出流</p>
+</li>
+<li><p>I：代表Input</p>
+</li>
+<li><p>O：代表Output</p>
+</li>
+</ul>
+<p>Java的IO流是单向的，只能从输入流（Input、Reader）中读取（read）数据，也只能往输出流（Output、Writer）中写（write、print）出数据。</p>
+<p><strong>按照IO流的处理数据的基本单位分：</strong></p>
+<ul>
+<li><p>字节流（XxxStream）：直接处理二进制，一个字节一个字节处理，它适用于一切数据，包括纯文本、doc、xls、图片、音频、视频等等</p>
+</li>
+<li><p>字符流（XxxReader和XxxWriter）：一个字符一个字符处理，只能纯文本类的数据。</p>
+</li>
+</ul>
+<p><strong>按照角色分：</strong></p>
+<ul>
+<li>节点流：连接源头、目的地，即被装饰者IO流</li>
+<li>处理流：增强功能，提高性能，即装饰者IO流</li>
+</ul>
+<p>节点流处于IO操作的第一线，所有操作必须通过他们进行；处理流是通过包装节点流来完成功能的，处理流可以增加很多层。处理流必须依赖和包装节点流，而不能单独存在。</p>
+<p><img src= data:image/gif;base64,R0lGODdhAQABAPAAAMPDwwAAACwAAAAAAQABAAACAkQBADs= data-src="https://cdn.jsdelivr.net/gh/uncle-he/blog-resource/img/io1.png" alt="io"></p>
+<p><img src= data:image/gif;base64,R0lGODdhAQABAPAAAMPDwwAAACwAAAAAAQABAAACAkQBADs= data-src="https://cdn.jsdelivr.net/gh/uncle-he/blog-resource/img/io2.png" alt="io"></p>
+<p>提示：装饰模式（Decorator Pattern）也称为包装模式（Wrapper Pattern），其使用一种对客户端透明的方式来动态地扩展对象的功能，它是通过继承扩展功能的替代方案之一。在现实生活中你也有很多装饰者的例子，例如：人需要各种各样的衣着，不管你穿着怎样，但是，对于你个人本质来说是不变的，充其量只是在外面加上了一些装饰，有，“遮羞的”、“保暖的”、“好看的”、“防雨的”….</p>
+<h2 id="常见IO流"><a href="#常见IO流" class="headerlink" title="常见IO流"></a>常见IO流</h2><p><strong>文件IO流</strong></p>
+<ul>
+<li>从文件读取<ul>
+<li>FileInputStream</li>
+<li>FileReader</li>
+</ul>
+</li>
+<li>写入到文件<ul>
+<li>FileOutputStream</li>
+<li>FileWriter</li>
+</ul>
+</li>
+</ul>
+<p><strong>缓冲IO流</strong></p>
+<ul>
+<li>从其他输入流中读取<ul>
+<li>BufferedInputStream</li>
+<li>BufferedReader</li>
+</ul>
+</li>
+<li>写入到其他输出流中<ul>
+<li>BufferedOutputStream</li>
+<li>BufferedWriter</li>
+</ul>
+</li>
+</ul>
+<p><strong>转换流</strong></p>
+<ul>
+<li>从其他输入流读取，并解码<ul>
+<li>InputStreamReader</li>
+</ul>
+</li>
+<li>写入到其他输出流中，并编码<ul>
+<li>OutputStreamWriter</li>
+</ul>
+</li>
+</ul>
+<p><strong>数据流</strong></p>
+<ul>
+<li>以与机器无关方式从底层输入流中读取基本 Java 数据类型<ul>
+<li>DataInputStream</li>
+</ul>
+</li>
+<li>以适当方式将基本 Java 数据类型写入输出流中<ul>
+<li>DataOutputStream</li>
+</ul>
+</li>
+</ul>
+<p><strong>对象流</strong></p>
+<ul>
+<li>序列化<ul>
+<li>ObjectOutputStream</li>
+</ul>
+</li>
+<li>反序列化<ul>
+<li>ObjectInputStream</li>
+</ul>
+</li>
+</ul>
+<p><strong>打印流</strong></p>
+<ul>
+<li>PrintStream</li>
+<li>PrintWriter</li>
+</ul>
+<p><strong>其它流</strong></p>
+<p>​    ……</p>
+<h2 id="抽象基类的常用方法"><a href="#抽象基类的常用方法" class="headerlink" title="抽象基类的常用方法"></a>抽象基类的常用方法</h2><h3 id="InputStream"><a href="#InputStream" class="headerlink" title="InputStream"></a>InputStream</h3><ul>
+<li><p>int read()</p>
+<p>从输入流中读取数据的下一个字节。返回 0 到 255 范围内的 int 字节值。如果因为已经到达流末尾而没有可用的字节，则返回值 -1。</p>
+</li>
+<li><p>int read(byte[] b)</p>
+<p>从此输入流中将最多 b.length 个字节的数据读入一个 byte 数组中。如果因为已经到达流末尾而没有可用的字节，则返回值 -1。否则以整数形式返回实际读取的字节数。</p>
+</li>
+<li><p>int read(byte[] b, int off,int len)</p>
+<p>将输入流中最多 len 个数据字节读入 byte 数组。尝试读取 len 个字节，但读取的字节也可能小于该值。以整数形式返回实际读取的字节数。如果因为流位于文件末尾而没有可用的字节，则返回值 -1.</p>
+</li>
+<li><p>public void close() throws IOException</p>
+<p>关闭此输入流并释放与该流关联的所有系统资源。 </p>
+</li>
+</ul>
+<h3 id="OutputStream"><a href="#OutputStream" class="headerlink" title="OutputStream"></a>OutputStream</h3><ul>
+<li><p>void write(int b)</p>
+<p>将指定的字节写入此输出流。write 的常规协定是：向输出流写入一个字节。要写入的字节是参数 b 的八个低位。b 的 24 个高位将被忽略。 即写入0~255范围的</p>
+</li>
+<li><p>void write(byte[] b)</p>
+<p>将 b.length 个字节从指定的 byte 数组写入此输出流。write(b) 的常规协定是：应该与调用 write(b, 0, b.length) 的效果完全相同。</p>
+</li>
+<li><p>void write(byte[] b,int off,int len)</p>
+<p>将指定 byte 数组中从偏移量 off 开始的 len 个字节写入此输出流。</p>
+</li>
+<li><p>public void flush()throws IOException </p>
+<p>刷新此输出流并强制写出所有缓冲的输出字节，调用此方法指示应将这些字节立即写入它们预期的目标。</p>
+</li>
+<li><p>public void close() throws IOException</p>
+<p>关闭此输出流并释放与该流关联的所有系统资源。</p>
+</li>
+</ul>
+<h3 id="Reader"><a href="#Reader" class="headerlink" title="Reader"></a>Reader</h3><ul>
+<li><p>int read()</p>
+<p>读取单个字符。作为整数读取的字符，范围在 0 到 65535 之间 (0x00-0xffff)（2个字节的Unicode码），如果已到达流的末尾，则返回 -1 </p>
+</li>
+<li><p>int read(char[] cbuf)</p>
+<p>将字符读入数组。如果已到达流的末尾，则返回 -1。否则返回本次读取的字符数。</p>
+</li>
+<li><p>int read(char[] cbuf,int off,int len)</p>
+<p>将字符读入数组的某一部分。存到数组cbuf中，从off处开始存储，最多读len个字符。如果已到达流的末尾，则返回 -1。否则返回本次读取的字符数。</p>
+</li>
+<li><p>public void close() throws IOException</p>
+<p>关闭此输入流并释放与该流关联的所有系统资源。 </p>
+</li>
+</ul>
+<h3 id="Writer"><a href="#Writer" class="headerlink" title="Writer"></a>Writer</h3><ul>
+<li><p>void write(int c)、Writer append(char c)</p>
+<p>写入单个字符。要写入的字符包含在给定整数值的 16 个低位中，16 高位被忽略。 即写入0 到 65535 之间的Unicode码。</p>
+</li>
+<li><p>void write(char[] cbuf)、Writer append(CharSequence csq)</p>
+<p>写入字符数组。 </p>
+</li>
+<li><p>void write(char[] cbuf,int off,int len)、Writer append(CharSequence csq, int start, int end)</p>
+<p>写入字符数组的某一部分。从off开始，写入len个字符</p>
+</li>
+<li><p>void write(String str)</p>
+<p>写入字符串。 </p>
+</li>
+<li><p>void write(String str,int off,int len)</p>
+<p>写入字符串的某一部分。</p>
+</li>
+<li><p>void flush()</p>
+<p>刷新该流的缓冲，则立即将它们写入预期目标。</p>
+</li>
+<li><p>public void close() throws IOException</p>
+<p>关闭此输出流并释放与该流关联的所有系统资源。 </p>
+</li>
+</ul>
+<h3 id="IO流使用步骤"><a href="#IO流使用步骤" class="headerlink" title="IO流使用步骤"></a>IO流使用步骤</h3><h4 id="读取-接收数据的步骤"><a href="#读取-接收数据的步骤" class="headerlink" title="读取/接收数据的步骤"></a>读取/接收数据的步骤</h4><p>第一步：选择IO流</p>
+<ol>
+<li><p>选择节点流</p>
+<p>明确你要从哪里读取数据，即数据源是什么？</p>
+<p>如果从文件中，就选择FileInputStream、FileReader；</p>
+<p>如果从内存的数组中，就选择ByteArrayInputStream、CharArrayReader；</p>
+<p>如果从网络中，就选择InputStream；</p>
+</li>
+<li><p>选择字节流还是字符流</p>
+<p>如果可选，那么看数据是否是纯文本，如果是纯文本并且文本的编码方式与当前平台的编码方式一致，那么选择字符流的效率更高，否则选择字节流。</p>
+</li>
+<li><p>是否需要增加额外的辅助功能</p>
+<ul>
+<li><p>缓冲功能：BufferedReader、BufferedInputStream</p>
+</li>
+<li><p>是否需要按行读：BufferedReader、Scanner</p>
+</li>
+<li><p>是否需要以与机器无关方式从底层输入流中读取基本 Java 数据类型：DataInputStream</p>
+</li>
+<li><p>是否需要对象的反序列化：ObjectInputStream</p>
+</li>
+<li><p>是否需要对流中的数据进行解码的转换：InputStreamReader</p>
+</li>
+</ul>
+</li>
+</ol>
+<p>第二步：循环读取数据</p>
+<ul>
+<li>read()</li>
+<li>readLine()</li>
+<li>readXxx()，例如：readInt()，readObject()，readUTF()等</li>
+</ul>
+<p>第三步：关闭close()</p>
+<h4 id="写-发送数据的步骤"><a href="#写-发送数据的步骤" class="headerlink" title="写/发送数据的步骤"></a>写/发送数据的步骤</h4><p>第一步：选择IO流</p>
+<ol>
+<li><p>选择节点流</p>
+<p>明确你要把数据写到哪里去，即数据的目的地是哪里？</p>
+<p>如果写到文件中，就选择FileOutputStream、FileWriter；</p>
+<p>如果写到内存某数组中，就选择ByteArrayOutputStream、CharArrayWriter；</p>
+<p>如果发送到网络中，就选择OutputStream；</p>
+</li>
+<li><p>选择字节流还是字符流</p>
+<p>如果可选，那么看数据是否是纯文本，如果是纯文本并且文本的编码方式与当前平台的编码方式一致，那么选择字符流的效率更高，否则选择字节流。</p>
+</li>
+<li><p>是否需要增加额外的辅助功能</p>
+<p>缓冲功能：BufferedOutputStream、BufferedWriter</p>
+<p>是否需要按行写：PrintStream、PrintWriter</p>
+<p>是否需要以以适当方式将基本 Java 数据类型写入输出流：DataOutputStream</p>
+<p>是否需要将对象的序列化：ObjectOutputStream</p>
+<p>是否需要对流中的数据进行编码的转换：OutputStreamWriter</p>
+</li>
+</ol>
+<p>第二步：循环写数据</p>
+<ul>
+<li><p>write(xx)</p>
+</li>
+<li><p>print(xx)和println(xx)</p>
+</li>
+<li><p>writeXxx：例如：writeInt(xx)、writeDouble(xx)、writeObject(xx)等</p>
+</li>
+</ul>
+<p>第三步：关闭IO流</p>
+<ul>
+<li>close()</li>
+</ul>
+<h1 id="文件IO流"><a href="#文件IO流" class="headerlink" title="文件IO流"></a>文件IO流</h1><p>1、类型</p>
+<p>FileInputStream：文件字节输入流，可以读取任意类型的文件</p>
+<p>FileOutputStream：文件字节输出流，可以把字节数据输出到任意类型的文件</p>
+<p>FileReader：文件字符输入流，只能读取纯文本的文件。按照平台默认的字符编码进行解码。</p>
+<p>FileWriter：文件字符输出流，只能把字符数据输出到纯文本文件。按照平台默认的字符编码进行编码。</p>
+<p>2、读写文件的代码</p>
+<p>示例代码：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">copy</span><span class="params">(File src, File dest)</span><span class="keyword">throws</span> IOException</span>&#123;</span><br><span class="line">    <span class="comment">//选择IO流</span></span><br><span class="line">    FileInputStream fis = <span class="keyword">new</span> FileInputStream(src);</span><br><span class="line">    FileOutputStream fos = <span class="keyword">new</span> FileOutputStream(dest);</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//读写</span></span><br><span class="line">    <span class="keyword">byte</span>[] data = <span class="keyword">new</span> <span class="keyword">byte</span>[<span class="number">1024</span>];</span><br><span class="line">    <span class="keyword">while</span>(<span class="keyword">true</span>)&#123;</span><br><span class="line">        <span class="keyword">int</span> len = fis.read(data);</span><br><span class="line">        <span class="keyword">if</span>(len==-<span class="number">1</span>)&#123;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        fos.write(data,<span class="number">0</span>,len);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//关闭</span></span><br><span class="line">     fis.close();</span><br><span class="line">    fos.close();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h1 id="缓冲IO流"><a href="#缓冲IO流" class="headerlink" title="缓冲IO流"></a>缓冲IO流</h1><p>1、分为</p>
+<p>BufferedInputStream：字节输入缓冲流，给InputStream系列IO流增加缓冲效果<br>BufferedOutputStream：字节输出缓冲流，给OutputStream系列IO流增加缓冲效果<br>BufferedReader：字符输入缓冲流，给Reader系列IO流增加缓冲效果</p>
+<blockquote>
+<p>String readLine()：按行读取</p>
+</blockquote>
+<p>BufferedWriter：字符输出缓冲流，给Writer系列IO流增加缓冲效果</p>
+<blockquote>
+<p>void newLine()：输出换行符</p>
+</blockquote>
+<p>2、默认的缓冲区的大小是8192 = 1024 * 8（字节/字符）</p>
+<p>3、可以给读写的过程提高效率</p>
+<blockquote>
+<p>不仅仅是可以给文件IO流增加缓冲效果，可以给任意符合对应类型的IO流增加缓冲效果。</p>
+</blockquote>
+<p>示例代码：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">copyBuffer</span><span class="params">(File src, File dest)</span><span class="keyword">throws</span> IOException</span>&#123;</span><br><span class="line">    <span class="comment">//选择IO流</span></span><br><span class="line">    FileInputStream fis = <span class="keyword">new</span> FileInputStream(src);</span><br><span class="line">    FileOutputStream fos = <span class="keyword">new</span> FileOutputStream(dest);</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//BufferedInputStream只能给FileInputStream增加缓冲效果，读的过程加快了</span></span><br><span class="line">    BufferedInputStream bis = <span class="keyword">new</span> BufferedInputStream(fis);<span class="comment">//fis在里面，bis在外面，fis比喻成内衣，bis比喻成外套</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment">//BufferedOutputStream只能FileOutputStream增加缓冲效果，写的过程加快了</span></span><br><span class="line">    BufferedOutputStream bos = <span class="keyword">new</span> BufferedOutputStream(fos);</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//数据流向：src--&gt;fis--&gt;bis（从fis先缓冲到bis）--&gt;data--&gt;bos（从data缓冲到bos中）--&gt;fos--&gt;dest</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment">//读写</span></span><br><span class="line">    <span class="keyword">byte</span>[] data = <span class="keyword">new</span> <span class="keyword">byte</span>[<span class="number">1024</span>];</span><br><span class="line">    <span class="keyword">while</span>(<span class="keyword">true</span>)&#123;</span><br><span class="line">        <span class="keyword">int</span> len = bis.read(data);</span><br><span class="line">        <span class="keyword">if</span>(len==-<span class="number">1</span>)&#123;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        bos.write(data,<span class="number">0</span>,len);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//关闭</span></span><br><span class="line">    <span class="comment">//关闭比喻成脱衣服</span></span><br><span class="line">    bos.close();</span><br><span class="line">       fos.close();</span><br><span class="line">       </span><br><span class="line">    bis.close();<span class="comment">//先脱外套，再脱内衣</span></span><br><span class="line">    fis.close();	    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h1 id="编码与解码的IO流（转换流）"><a href="#编码与解码的IO流（转换流）" class="headerlink" title="编码与解码的IO流（转换流）"></a>编码与解码的IO流（转换流）</h1><p>1、编码：OutputStreamWriter</p>
+<p>​    可以把字符流转为字节流输出，并且在转换的过程中，可以指定字符编码。</p>
+<p>2、解码：InputStreamReader</p>
+<p>​    可以把字节输入流转为字符输入流，并且在转换的过程中，可以指定字符编码。</p>
+<p>3、示例代码：解码（文件是GBK，当前平台是UTF-8）</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">	<span class="meta">@Test</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">test4</span><span class="params">()</span><span class="keyword">throws</span> IOException</span>&#123;</span><br><span class="line">		<span class="comment">//因为这里想要用在程序中按照“指定”的编码方式进行解码，而不是按照平台“默认的”编码方式进行解码</span></span><br><span class="line">		<span class="comment">//所以，我这里仍然用FileInputStream字节流，把文件编码后的数据，原样读取</span></span><br><span class="line">		<span class="comment">//从文件到FileInputStream fis内存的过程中，先不解码</span></span><br><span class="line">		<span class="comment">//因为如果选择FileReader，从文件到FileReader的过程中，就已经按照平台“默认的”编码方式解码好了，我们无法控制</span></span><br><span class="line">		</span><br><span class="line">		FileInputStream fis = <span class="keyword">new</span> FileInputStream(<span class="string">"d:/File类概述.txt"</span>);</span><br><span class="line">		<span class="comment">//我要使用InputStreamReader，把FileInputStream转为字符流</span></span><br><span class="line"><span class="comment">//		InputStreamReader isr = new InputStreamReader(fis);//如果没有指定，还是按照默认的编码方式</span></span><br><span class="line">		InputStreamReader isr = <span class="keyword">new</span> InputStreamReader(fis,<span class="string">"GBK"</span>);<span class="comment">//如果指定，就按照指定的编码方式解码</span></span><br><span class="line">		</span><br><span class="line">		<span class="comment">//文件--&gt;fis（字节流）--&gt;解码--&gt;isr（字符流）--&gt;br -&gt;读取的是字符</span></span><br><span class="line">		<span class="comment">//字符流，要么按照char[]读取，要么可以用BufferedReader包装按行读取</span></span><br><span class="line">		BufferedReader br = <span class="keyword">new</span> BufferedReader(isr);</span><br><span class="line">		String line;</span><br><span class="line">		<span class="keyword">while</span>((line = br.readLine()) !=<span class="keyword">null</span>)&#123;</span><br><span class="line">			System.out.println(line);</span><br><span class="line">		&#125;</span><br><span class="line">		</span><br><span class="line">		br.close();</span><br><span class="line">		isr.close();</span><br><span class="line">		fis.close();</span><br><span class="line">	&#125;</span><br></pre></td></tr></table></figure>
+
+<p>4、示例代码：编码（文件是GBK，当前平台是UTF-8）</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">	<span class="meta">@Test</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">test3</span><span class="params">()</span><span class="keyword">throws</span> IOException</span>&#123;</span><br><span class="line">		String hua = <span class="string">"File类可以使用文件路径字符串来创建File实例"</span>;</span><br><span class="line">		</span><br><span class="line">		<span class="comment">//因为想要用在程序中进行编码，所以这里选用FileOutputStream</span></span><br><span class="line">		FileOutputStream fos = <span class="keyword">new</span> FileOutputStream(<span class="string">"d:/File类概述.txt"</span>,<span class="keyword">true</span>);</span><br><span class="line">		</span><br><span class="line">		<span class="comment">//这里xx，想要直接操作字符串，那么必须是字符流，而fos是字节流，无法直接操作字符串</span></span><br><span class="line"><span class="comment">//		xx.write("\r\n");</span></span><br><span class="line"><span class="comment">//		xx.write(hua);</span></span><br><span class="line">		</span><br><span class="line">		<span class="comment">//数据流向：内存 --&gt; osw （字符流）--&gt;在写入fos过程中进行编码--&gt;fos（字节流）--&gt;文件</span></span><br><span class="line">		</span><br><span class="line">		OutputStreamWriter osw = <span class="keyword">new</span> OutputStreamWriter(fos,<span class="string">"GBK"</span>);</span><br><span class="line">		osw.write(<span class="string">"\r\n"</span>);</span><br><span class="line">		osw.write(hua);</span><br><span class="line">		</span><br><span class="line">		osw.close();</span><br><span class="line">		fos.close();</span><br><span class="line">	&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h1 id="数据IO流"><a href="#数据IO流" class="headerlink" title="数据IO流"></a>数据IO流</h1><p>1、类型</p>
+<p>DataInputStream：允许应用程序以与机器无关方式从底层输入流中读取基本 Java 数据类型。<br>DataOutputStream：允许应用程序以适当方式将基本 Java 数据类型写入输出流中。</p>
+<blockquote>
+<p>它俩必须配对使用</p>
+<p>读的顺序要与写的顺序一致</p>
+</blockquote>
+<p>2、API</p>
+<table>
+<thead>
+<tr>
+<th>DataOutputStream</th>
+<th>DataInputStream</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>writeInt(xx)：输出int类型整数</td>
+<td>int readInt()</td>
+</tr>
+<tr>
+<td>writeDouble(xx)：输出double类型</td>
+<td>double readDouble()</td>
+</tr>
+<tr>
+<td>writeBoolean(xx)</td>
+<td>boolean readBoolean()</td>
+</tr>
+<tr>
+<td>writeLong(xx)</td>
+<td>long readLong()</td>
+</tr>
+<tr>
+<td>writeChar(xx)</td>
+<td>char readChar()</td>
+</tr>
+<tr>
+<td>writeByte(xx)</td>
+<td>byte readByte()</td>
+</tr>
+<tr>
+<td>writeShort(xx)</td>
+<td>short readShort()</td>
+</tr>
+<tr>
+<td>writeFloat(xx)</td>
+<td>float readFloat()</td>
+</tr>
+<tr>
+<td>writeUTF(String str)：输出字符串的</td>
+<td>String readUTF()</td>
+</tr>
+</tbody></table>
+<h1 id="对象IO流"><a href="#对象IO流" class="headerlink" title="对象IO流"></a>对象IO流</h1><p>1、类型</p>
+<p>ObjectOutputStream：对象序列化，输出对象，把对象转为字节序列输出</p>
+<p>ObjectInputStream：对象反序列化，读取对象，把字节序列重构成Java对象</p>
+<p>2、API</p>
+<p>ObjectOutputStream：writeObject(对象)</p>
+<p>ObjectInputStream：Object  readObject()</p>
+<p>3、序列化需要注意哪些内容？</p>
+<p>（1）所有要序列化的对象的类型都必须实现java.io.Serializable接口</p>
+<blockquote>
+<p>如果对象的属性类型也是引用数据类型，那么也要实现java.io.Serializable接口</p>
+</blockquote>
+<p>（2）希望类的修改对象反序列化不产生影响，那么我们最后能够增加一个序列化版本ID</p>
+<blockquote>
+<p>private static final long serialVersionUID = 1L;</p>
+</blockquote>
+<p>（3）如果有些属性不想要序列化，可以加transient</p>
+<p>（4）如果某个属性前面有static修饰，也不参与序列化</p>
+<p>4、除了Serializable接口之外，还可以实现java.io.Externalizable接口，但是要求重写：</p>
+<p>void readExternal(ObjectInput in)<br>void writeExternal(ObjectOutput out)</p>
+<p>  关于哪些属性序列化和反序列化，由程序员自己定。</p>
+<h1 id="其他的IO流相关内容"><a href="#其他的IO流相关内容" class="headerlink" title="其他的IO流相关内容"></a>其他的IO流相关内容</h1><p>1、如果要实现按行读取，可选择什么类型？</p>
+<p>BufferedReader：String readLine()</p>
+<p>Scanner：String nextLine()</p>
+<p>2、如果要按行输出，可以选择什么类型？</p>
+<p>（1）自己处理\r\n</p>
+<p>（2）BufferedWriter：newLine()</p>
+<p>（3）PrintStream和PrintWriter：println()</p>
+<h1 id="JDK1-7新特性：try…with…resources"><a href="#JDK1-7新特性：try…with…resources" class="headerlink" title="JDK1.7新特性：try…with…resources"></a>JDK1.7新特性：try…with…resources</h1><p>语法格式：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">try</span>(需要关闭的资源对象的声明)&#123;</span><br><span class="line">    业务逻辑代码</span><br><span class="line">&#125;<span class="keyword">catch</span>(异常类型 e)&#123;</span><br><span class="line">    处理异常代码</span><br><span class="line">&#125;<span class="keyword">catch</span>(异常类型 e)&#123;</span><br><span class="line">    处理异常代码</span><br><span class="line">&#125;</span><br><span class="line">....</span><br></pre></td></tr></table></figure>
+
+<p>它没有finally，也不需要程序员去关闭资源对象，无论是否发生异常，都会关闭资源对象</p>
+<p>示例代码：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">test03</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="comment">//从d:/1.txt(GBK)文件中，读取内容，写到项目根目录下1.txt(UTF-8)文件中</span></span><br><span class="line">  <span class="keyword">try</span>(</span><br><span class="line">    FileInputStream fis = <span class="keyword">new</span> FileInputStream(<span class="string">"d:/1.txt"</span>);</span><br><span class="line">    InputStreamReader isr = <span class="keyword">new</span> InputStreamReader(fis,<span class="string">"GBK"</span>);</span><br><span class="line">    BufferedReader br = <span class="keyword">new</span> BufferedReader(isr);</span><br><span class="line"></span><br><span class="line">    FileOutputStream fos = <span class="keyword">new</span> FileOutputStream(<span class="string">"1.txt"</span>);</span><br><span class="line">    OutputStreamWriter osw = <span class="keyword">new</span> OutputStreamWriter(fos,<span class="string">"UTF-8"</span>);</span><br><span class="line">    BufferedWriter bw = <span class="keyword">new</span> BufferedWriter(osw);</span><br><span class="line">  )&#123;</span><br><span class="line">    String str;</span><br><span class="line">    <span class="keyword">while</span>((str = br.readLine()) != <span class="keyword">null</span>)&#123;</span><br><span class="line">      bw.write(str);</span><br><span class="line">      bw.newLine();</span><br><span class="line">    &#125;</span><br><span class="line">  &#125; <span class="keyword">catch</span> (FileNotFoundException e) &#123;</span><br><span class="line">    e.printStackTrace();</span><br><span class="line">  &#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">    e.printStackTrace();</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h1 id="NIO"><a href="#NIO" class="headerlink" title="NIO"></a>NIO</h1><p>早期的java只提供了一个File类来访问文件系统，但File类的功能比较有限，所提供的方法性能也不高。而且，大多数方法在出错时仅返回失败，并不会提供异常信息。</p>
+<p>NIO. 2为了弥补这种不足，引入了Path接口，代表一个平台无关的平台路径，描述了目录结构中文件的位置。Path可以看成是File类的升级版本，实际引用的资源也可以不存在。</p>
+<p>在以前IO操作都是这样写的:</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> java.io.File;</span><br><span class="line"></span><br><span class="line">File file = <span class="keyword">new</span> File(<span class="string">"index.html"</span>);</span><br></pre></td></tr></table></figure>
+
+<p>但在Java7 中，我们可以这样写：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> java.nio.file.Path; </span><br><span class="line"><span class="keyword">import</span> java.nio.file.Paths; </span><br><span class="line">Path path = Paths.get(<span class="string">"index.html"</span>);</span><br></pre></td></tr></table></figure>
+
+<p>同时，NIO.2还提供了Files、Paths工具类，Files包含了大量静态的工具方法来操作文件；Paths则包含了两个返回Path的静态工厂方法。</p>
+<ul>
+<li>static Path get(String first, String … more) : 用于将多个字符串串连成路径</li>
+<li>static Path get(URI uri): 返回指定uri对应的Path路径</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">Path path = Paths.get(<span class="string">"io"</span>, <span class="string">"java"</span>, <span class="string">"1.txt"</span>);</span><br><span class="line">System.out.println(path);</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="Path接口"><a href="#Path接口" class="headerlink" title="Path接口"></a>Path接口</h2><ul>
+<li>String toString() ： 返回调用 Path 对象的字符串表示形式</li>
+<li>boolean startsWith(String path) : 判断是否以 path 路径开始</li>
+<li>boolean endsWith(String path) : 判断是否以 path 路径结束</li>
+<li>boolean isAbsolute() : 判断是否是绝对路径</li>
+<li>Path getParent() ：返回Path对象包含整个路径，不包含 Path 对象指定的文件路径</li>
+<li>Path getRoot() ：返回调用 Path 对象的根路径</li>
+<li>Path getFileName() : 返回与调用 Path 对象关联的文件名</li>
+<li>Path getName(int idx) : 返回指定索引位置 idx 的路径名称</li>
+<li>int getNameCount() : 返回Path 根目录后面元素的数量</li>
+<li>Path toAbsolutePath() : 作为绝对路径返回调用 Path 对象</li>
+<li>Path resolve(Path p) :合并两个路径，返回合并后的路径对应的Path对象</li>
+<li>File toFile(): 将Path转化为File类的对象</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">  <span class="comment">//Path path = Paths.get("1.txt");</span></span><br><span class="line">  <span class="comment">//Path path = Paths.get("io", "java");</span></span><br><span class="line">  <span class="comment">//Path path = Paths.get("d:","unclehe");</span></span><br><span class="line">  Path path = Paths.get(<span class="string">"io"</span>, <span class="string">"java"</span>, <span class="string">"1.txt"</span>);</span><br><span class="line">  System.out.println(<span class="string">"toString:"</span>+path);</span><br><span class="line"></span><br><span class="line">  System.out.println(<span class="string">"startsWith:"</span>+path.startsWith(<span class="string">"io"</span>));</span><br><span class="line">  System.out.println(<span class="string">"endsWith:"</span>+path.endsWith(<span class="string">"1.txt"</span>));</span><br><span class="line"></span><br><span class="line">  System.out.println(<span class="string">"parent:"</span>+path.getParent());<span class="comment">//io/java</span></span><br><span class="line">  System.out.println(<span class="string">"root:"</span>+path.getRoot());<span class="comment">//null  只有绝对路径才有根</span></span><br><span class="line">  System.out.println(<span class="string">"fileName："</span>+path.getFileName());</span><br><span class="line">  System.out.println(<span class="string">"FileSystem.separator:"</span>+path.getFileSystem().getSeparator());</span><br><span class="line"></span><br><span class="line">  System.out.println(<span class="string">"nameCount:"</span>+path.getNameCount());</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; path.getNameCount(); i++) &#123;</span><br><span class="line">    System.out.println(<span class="string">"name("</span>+(i+<span class="number">1</span>)+<span class="string">"):"</span>+path.getName(i));</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  System.out.println(<span class="string">"isAbsolutePath:"</span>+path.isAbsolute());</span><br><span class="line">  System.out.println(<span class="string">"toAbsolutePath:"</span>+path.toAbsolutePath());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="Files工具类"><a href="#Files工具类" class="headerlink" title="Files工具类"></a>Files工具类</h2><p>用于操作文件或目录的工具类：</p>
+<ul>
+<li>Path createDirectory(Path path, FileAttribute&lt;?&gt; … attr) : 创建一个目录</li>
+<li>Path createDirectories(Path dir, FileAttribute&lt;?&gt;… attrs)  创建一个目录，通过创建所有不存在的父目录。</li>
+<li>Path createFile(Path path, FileAttribute&lt;?&gt; … arr) : 创建一个文件</li>
+<li>Path createLink(Path link, Path existing) 创建一个新的链接（目录项）为现有的文件（可选操作）。 </li>
+<li>void delete(Path path) : 删除一个文件，如果不存在，执行报错</li>
+<li>void deleteIfExists(Path path) : Path对应的文件如果存在，执行删除，如果不存在，就什么也不干</li>
+<li>Path copy(Path src, Path dest, CopyOption … how) : 文件的复制</li>
+<li>Path move(Path src, Path dest, CopyOption…how) : 将 src 移动到 dest 位置</li>
+<li>long size(Path path) : 返回 path 指定文件的大小</li>
+</ul>
+<p>Files常用方法：用于判断</p>
+<ul>
+<li>boolean exists(Path path, LinkOption … opts) : 判断文件是否存在</li>
+<li>boolean notExists(Path path, LinkOption … opts) : 判断文件是否不存在</li>
+<li>boolean isDirectory(Path path, LinkOption … opts) : 判断是否是目录</li>
+<li>boolean isRegularFile(Path path, LinkOption … opts) : 判断是否是文件</li>
+<li>boolean isHidden(Path path) : 判断是否是隐藏文件</li>
+<li>boolean isReadable(Path path) : 判断文件是否可读</li>
+<li>boolean isWritable(Path path) : 判断文件是否可写</li>
+</ul>
+<p>Files常用方法：用于操作内容</p>
+<ul>
+<li><p>InputStream newInputStream(Path path, OpenOption…how):获取 InputStream 对象</p>
+</li>
+<li><p>OutputStream newOutputStream(Path path, OpenOption…how) : 获取 OutputStream 对象</p>
+</li>
+</ul>
+<p>Files其他方法：</p>
+<ul>
+<li>public static List<String> readAllLines(Path path,Charset cs)</li>
+</ul>
+</div><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">Uncle He</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://www.unclehe.net/2020/06/21/java-io/">https://www.unclehe.net/2020/06/21/java-io/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://www.unclehe.net" target="_blank">Uncle He</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/IO/">IO</a></div><div class="post_share"><div class="social-share" data-image="https://cdn.jsdelivr.net/gh/uncle-he/blog-resource/img/java.jpeg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css"/><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js"></script></div></div><div class="post-reward"><a class="reward-button button--primary button--animated"> <i class="fa fa-qrcode"></i> 打赏<div class="reward-main"><ul class="reward-all"><li class="reward-item"><img class="post-qr-code__img" src="https://cdn.jsdelivr.net/gh/uncle-he/blog-resource/img/wechat.jpg" alt="wechat"/><div class="post-qr-code__desc">wechat</div></li><li class="reward-item"><img class="post-qr-code__img" src="https://cdn.jsdelivr.net/gh/uncle-he/blog-resource/img/alipay.jpg" alt="alipay"/><div class="post-qr-code__desc">alipay</div></li></ul></div></a></div><nav class="pagination_post" id="pagination"><div class="next-post pull-full"><a href="/2020/06/20/java-%3CT%3E/"><img class="next_cover" data-src="https://cdn.jsdelivr.net/gh/uncle-he/blog-resource/img/java.jpeg" onerror="onerror=null;src='/img/404.jpg'"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">泛型</div></div></a></div></nav><hr><div id="post-comment"><div class="comment_headling"><i class="fa fa-comments fa-fw" aria-hidden="true"></i><span> 评论</span></div><div class="vcomment" id="vcomment"></div><script src="https://cdn.jsdelivr.net/npm/valine/dist/Valine.min.js"></script><script>var requestSetting = function (from,set) {
+  var from = from
+  var setting = set.split(',').filter(function(item){
+  return from.indexOf(item) > -1
+  });
+  setting = setting.length == 0 ? from :setting;
+  return setting
+}
+
+var guestInfo = requestSetting(['nick','mail','link'],'nick,mail,link')
+var requiredFields = requestSetting(['nick','mail','link'],'nick,mail')
+
+window.valine = new Valine({
+  el:'#vcomment',
+  appId: 'kJLrzEh54hbM7O4kjF6VhlAt-MdYXbMMI',
+  appKey: 'wbsLMRTmGNJ2wpVv2Xtvo17B',
+  notify: false,
+  verify: false,
+  placeholder: '昵称请填写QQ号会自动获取头像和昵称...',
+  avatar: 'monsterid',
+  meta: guestInfo,
+  pageSize: '10',
+  lang: 'zh-CN',
+  recordIP: false,
+  serverURLs: '',
+  emojiCDN: '',
+  emojiMaps: "",
+  enableQQ: true,
+  requiredFields: requiredFields
+});</script></div></article></main><footer id="footer" style="background-image: url(https://cdn.jsdelivr.net/gh/uncle-he/blog-resource/img/java.jpeg)" data-type="photo"><div id="footer-wrap"><div class="copyright">&copy;2020 By Uncle He</div><div class="framework-info"><span>驱动 </span><a href="https://hexo.io" target="_blank" rel="noopener"><span>Hexo</span></a><span class="footer-separator">|</span><span>主题 </span><a href="https://github.com/jerryc127/hexo-theme-butterfly" target="_blank" rel="noopener"><span>Butterfly</span></a></div><div class="footer_custom_text">Hi, welcome to my <a href="https://www.unclehe.net/">blog</a>!</div></div></footer></div><section class="rightside" id="rightside"><div id="rightside-config-hide"><i class="fa fa-book" id="readmode" title="阅读模式"></i><i class="fa fa-plus" id="font_plus" title="放大字体"></i><i class="fa fa-minus" id="font_minus" title="缩小字体"></i><a class="translate_chn_to_cht" id="translateLink" href="javascript:translatePage();" title="简繁转换" target="_self">简</a><i class="darkmode far fa-moon" id="darkmode" title="夜间模式"></i></div><div id="rightside-config-show"><div id="rightside_config" title="设置"><i class="fa fa-cog" aria-hidden="true"></i></div><a id="to_comment" href="#post-comment" title="直达评论"><i class="scroll_to_comment fa fa-comments">  </i></a><i class="fa fa-list-ul close" id="mobile-toc-button" title="目录" aria-hidden="true"></i><i class="fa fa-arrow-up" id="go-up" title="回到顶部" aria-hidden="true"></i></div></section><div class="search-dialog" id="local-search"><div class="search-dialog__title" id="local-search-title">本地搜索</div><div id="local-input-panel"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div></div><hr/><div id="local-search-results"><div id="local-hits"></div><div id="local-stats"><div class="local-search-stats__hr" id="hr"><span>由</span> <a href="https://github.com/wzpan/hexo-generator-search" target="_blank" rel="noopener" style="color:#49B1F5;">hexo-generator-search</a>
+ <span>提供支持</span></div></div></div><span class="search-close-button"><i class="fa fa-times"></i></span></div><div class="search-mask"></div><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="/js/tw_cn.js"></script><script src="https://cdn.jsdelivr.net/npm/medium-zoom/dist/medium-zoom.min.js"></script><script src="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.js"></script><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><script src="https://cdn.jsdelivr.net/npm/instant.page@3/instantpage.min.js" type="module"></script><script src="https://cdn.jsdelivr.net/npm/lozad/dist/lozad.min.js"></script><script src="/js/search/local-search.js"></script><script src="https://cdn.jsdelivr.net/gh/uncle-he/blog-resource/js/customjs.js"></script></body></html>
