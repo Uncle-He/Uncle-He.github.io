@@ -1,0 +1,229 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Filter | Uncle He</title><meta name="description" content="Filter简介Filter中文意思为过滤器。顾名思义，过滤器可在浏览器以及目标资源之间起到一个过滤的作用。例如：水净化器，可以看成是生活中的一个过滤器，他可以将污水中的杂质过滤，从而使进入的污水变成净水。 对于WEB应用来说，过滤器是一个驻留在服务器中的WEB组件，他可以截取客户端和WEB资源之间的请求和响应信息。 WEB资源可能包括Servlet、JSP、HTML页面等  当服务器收到特定的请"><meta name="keywords" content="JavaWeb"><meta name="author" content="Uncle He"><meta name="copyright" content="Uncle He"><meta name="format-detection" content="telephone=no"><link rel="shortcut icon" href="https://cdn.jsdelivr.net/gh/uncle-he/blog-resource/img/favicon.ico"><meta http-equiv="Cache-Control" content="no-transform"><meta http-equiv="Cache-Control" content="no-siteapp"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="dns-prefetch" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="https://fonts.googleapis.com" crossorigin="crossorigin"/><link rel="dns-prefetch" href="https://fonts.googleapis.com"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="dns-prefetch" href="//busuanzi.ibruce.info"/><meta name="twitter:card" content="summary"><meta name="twitter:title" content="Filter"><meta name="twitter:description" content="Filter简介Filter中文意思为过滤器。顾名思义，过滤器可在浏览器以及目标资源之间起到一个过滤的作用。例如：水净化器，可以看成是生活中的一个过滤器，他可以将污水中的杂质过滤，从而使进入的污水变成净水。 对于WEB应用来说，过滤器是一个驻留在服务器中的WEB组件，他可以截取客户端和WEB资源之间的请求和响应信息。 WEB资源可能包括Servlet、JSP、HTML页面等  当服务器收到特定的请"><meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/uncle-he/blog-resource/img/cover/java.jpeg"><meta property="og:type" content="article"><meta property="og:title" content="Filter"><meta property="og:url" content="https://www.unclehe.net/2020/07/12/java-filter/"><meta property="og:site_name" content="Uncle He"><meta property="og:description" content="Filter简介Filter中文意思为过滤器。顾名思义，过滤器可在浏览器以及目标资源之间起到一个过滤的作用。例如：水净化器，可以看成是生活中的一个过滤器，他可以将污水中的杂质过滤，从而使进入的污水变成净水。 对于WEB应用来说，过滤器是一个驻留在服务器中的WEB组件，他可以截取客户端和WEB资源之间的请求和响应信息。 WEB资源可能包括Servlet、JSP、HTML页面等  当服务器收到特定的请"><meta property="og:image" content="https://cdn.jsdelivr.net/gh/uncle-he/blog-resource/img/cover/java.jpeg"><meta property="article:published_time" content="2020-07-12T01:40:42.000Z"><meta property="article:modified_time" content="2020-07-13T02:31:05.529Z"><script src="https://cdn.jsdelivr.net/npm/js-cookie/dist/js.cookie.min.js"></script><script>var autoChangeMode = 'false'
+var t = Cookies.get("theme")
+if (autoChangeMode == '1'){
+  var isDarkMode = window.matchMedia("(prefers-color-scheme: dark)").matches
+  var isLightMode = window.matchMedia("(prefers-color-scheme: light)").matches
+  var isNotSpecified = window.matchMedia("(prefers-color-scheme: no-preference)").matches
+  var hasNoSupport = !isDarkMode && !isLightMode && !isNotSpecified
+
+  if (t === undefined){
+    if (isLightMode) activateLightMode()
+    else if (isDarkMode) activateDarkMode()
+    else if (isNotSpecified || hasNoSupport){
+      console.log('You specified no preference for a color scheme or your browser does not support it. I Schedule dark mode during night time.')
+      var now = new Date()
+      var hour = now.getHours()
+      var isNight = hour < 6 || hour >= 18
+      isNight ? activateDarkMode() : activateLightMode()
+  }
+  } else if (t == 'light') activateLightMode()
+  else activateDarkMode()
+
+} else if (autoChangeMode == '2'){
+  now = new Date();
+  hour = now.getHours();
+  isNight = hour < 6 || hour >= 18
+  if(t === undefined) isNight? activateDarkMode() : activateLightMode()
+  else if (t === 'light') activateLightMode()
+  else activateDarkMode() 
+} else {
+  if ( t == 'dark' ) activateDarkMode()
+  else if ( t == 'light') activateLightMode()
+}
+
+function activateDarkMode(){
+  document.documentElement.setAttribute('data-theme', 'dark')
+  if (document.querySelector('meta[name="theme-color"]') !== null){
+    document.querySelector('meta[name="theme-color"]').setAttribute('content','#000')
+  }
+}
+function activateLightMode(){
+  document.documentElement.setAttribute('data-theme', 'light')
+  if (document.querySelector('meta[name="theme-color"]') !== null){
+  document.querySelector('meta[name="theme-color"]').setAttribute('content','#fff')
+  }
+}</script><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.css"><link rel="canonical" href="https://www.unclehe.net/2020/07/12/java-filter/"><link rel="prev" title="Listener" href="https://www.unclehe.net/2020/07/13/java-listener/"><link rel="next" title="Cookie和Session" href="https://www.unclehe.net/2020/07/11/java-cookie-session/"><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Titillium+Web"><script>var GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"search.xml","languages":{"hits_empty":"找不到您查询的内容:${query}"}},
+  translate: {"defaultEncoding":1,"translateDelay":0,"cookieDomain":"https://unclehe.net/","msgToTraditionalChinese":"繁","msgToSimplifiedChinese":"简"},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  bookmark: {
+    message_prev: '按',
+    message_next: '键将本页加入书签'
+  },
+  runtime_unit: '天',
+  runtime: true,
+  copyright: {"languages":{"author":"作者: Uncle He","link":"链接: ","source":"来源: Uncle He","info":"著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。"}},
+  ClickShowText: undefined,
+  medium_zoom: true,
+  fancybox: false,
+  Snackbar: {"bookmark":{"message_prev":"按","message_next":"键将本页加入书签"},"chs_to_cht":"你已切换为繁体","cht_to_chs":"你已切换为简体","day_to_night":"你已切换为深色模式","night_to_day":"你已切换为浅色模式","bgLight":"#49b1f5","bgDark":"#2d3035","position":"top-right"},
+  baiduPush: false,
+  highlightCopy: true,
+  highlightLang: true,
+  highlightShrink: 'true',
+  isFontAwesomeV5: true,
+  isPhotoFigcaption: false,
+  islazyload: true,
+  isanchor: false
+  
+}</script><script>var GLOBAL_CONFIG_SITE = { 
+  isPost: true,
+  isHome: false,
+  isSidebar: true  
+  }</script><noscript><style>
+#page-header {
+  opacity: 1
+}
+.justified-gallery img{
+  opacity: 1
+}
+</style></noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/uncle-he/blog-resource/css/customcss.css"><meta name="generator" content="Hexo 4.2.1"></head><body><div id="mobile-sidebar"><div id="menu_mask"></div><div id="mobile-sidebar-menus"><div class="mobile_author_icon"><img class="avatar-img" src="https://cdn.jsdelivr.net/gh/uncle-he/blog-resource/img/avatar.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="mobile_post_data"><div class="mobile_data_item is-center"><div class="mobile_data_link"><a href="/archives/"><div class="headline">文章</div><div class="length_num">29</div></a></div></div><div class="mobile_data_item is-center">      <div class="mobile_data_link"><a href="/tags/"><div class="headline">标签</div><div class="length_num">15</div></a></div></div><div class="mobile_data_item is-center">     <div class="mobile_data_link"><a href="/categories/"><div class="headline">分类</div><div class="length_num">17</div></a></div></div></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fa fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fa fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fa fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fa fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fa fa-heart"></i><span> 关于</span></a></div><div class="menus_item"><a class="site-page" href="https://unclehe.gitee.io" target="_blank" rel="noopener"><i class="fa-fw fa fa-toolbox"></i><span> 百宝箱</span></a></div><div class="menus_item"><a class="site-page" href="/messageboard/"><i class="fa-fw fa fa-coffee"></i><span> 留言板</span></a></div></div></div></div><i class="fa fa-arrow-right on" id="toggle-sidebar" aria-hidden="true">     </i><div id="sidebar"><div class="sidebar-toc"><div class="sidebar-toc__title">目录</div><div class="sidebar-toc__progress"><span class="progress-notice">你已经读了</span><span class="progress-num">0</span><span class="progress-percentage">%</span><div class="sidebar-toc__progress-bar">     </div></div><div class="sidebar-toc__content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Filter简介"><span class="toc-number">1.</span> <span class="toc-text">Filter简介</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Filter相关接口"><span class="toc-number">2.</span> <span class="toc-text">Filter相关接口</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#创建Filter"><span class="toc-number">3.</span> <span class="toc-text">创建Filter</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#实现Filter接口"><span class="toc-number">3.1.</span> <span class="toc-text">实现Filter接口</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#在web-xml注册Filter"><span class="toc-number">3.2.</span> <span class="toc-text">在web.xml注册Filter</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Filter的生命周期"><span class="toc-number">4.</span> <span class="toc-text">Filter的生命周期</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Filter的目标资源"><span class="toc-number">5.</span> <span class="toc-text">Filter的目标资源</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Filter的执行顺序"><span class="toc-number">6.</span> <span class="toc-text">Filter的执行顺序</span></a></li></ol></div></div></div><div id="body-wrap"><div class="post-bg" id="nav" style="background-image: url(https://cdn.jsdelivr.net/gh/uncle-he/blog-resource/img/cover/java.jpeg)"><div id="page-header"><span class="pull_left" id="blog_name"><a class="blog_title" id="site-name" href="/">Uncle He</a></span><span class="pull_right menus"><div id="search_button"><a class="site-page social-icon search"><i class="fa fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fa fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fa fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fa fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fa fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fa fa-heart"></i><span> 关于</span></a></div><div class="menus_item"><a class="site-page" href="https://unclehe.gitee.io" target="_blank" rel="noopener"><i class="fa-fw fa fa-toolbox"></i><span> 百宝箱</span></a></div><div class="menus_item"><a class="site-page" href="/messageboard/"><i class="fa-fw fa fa-coffee"></i><span> 留言板</span></a></div></div><span class="toggle-menu close"><a class="site-page"><i class="fa fa-bars fa-fw" aria-hidden="true"></i></a></span></span></div><div id="post-info"><div id="post-title"><div class="posttitle">Filter</div></div><div id="post-meta"><div class="meta-firstline"><time class="post-meta__date"><span class="post-meta__date-created" title="发表于 2020-07-12 09:40:42"><i class="fa fa-calendar" aria-hidden="true"></i> 发表于 2020-07-12</span><span class="post-meta__separator">|</span><span class="post-meta__date-updated" title="更新于 2020-07-13 10:31:05"><i class="fa fa-history" aria-hidden="true"></i> 更新于 2020-07-13</span></time><span class="post-meta__categories"><span class="post-meta__separator">|</span><i class="fa fa-inbox post-meta__icon" aria-hidden="true"></i><a class="post-meta__categories" href="/categories/%E8%87%AA%E5%AD%A6Java/">自学Java</a><i class="fa fa-angle-right post-meta__separator" aria-hidden="true"></i><i class="fa fa-inbox post-meta__icon" aria-hidden="true"></i><a class="post-meta__categories" href="/categories/%E8%87%AA%E5%AD%A6Java/JavaWeb/">JavaWeb</a></span></div><div class="meta-secondline"> <span class="post-meta-wordcount"><i class="post-meta__icon far fa-file-word" aria-hidden="true"></i><span>字数总计:</span><span class="word-count">1.7k</span><span class="post-meta__separator">|</span><i class="post-meta__icon far fa-clock" aria-hidden="true"></i><span>阅读时长: 6 分钟</span></span></div><div class="meta-thirdline"><span class="post-meta-pv-cv"><span class="post-meta__separator">|</span><i class="fa fa-eye post-meta__icon" aria-hidden="true"> </i><span>阅读量:</span><span id="busuanzi_value_page_pv"></span></span><span class="post-meta-commentcount"><span class="post-meta__separator">|</span><i class="post-meta__icon far fa-comments" aria-hidden="true"></i><span>评论数:</span><a href="/2020/07/12/java-filter/#post-comment" itemprop="discussionUrl"><span class="valine-comment-count comment-count" data-xid="/2020/07/12/java-filter/" itemprop="commentCount"></span></a></span></div></div></div></div><main class="layout_post" id="content-inner"><article id="post"><div class="post-content" id="article-container"><h1 id="Filter简介"><a href="#Filter简介" class="headerlink" title="Filter简介"></a>Filter简介</h1><p>Filter中文意思为过滤器。顾名思义，过滤器可在浏览器以及目标资源之间起到一个过滤的作用。例如：水净化器，可以看成是生活中的一个过滤器，他可以将污水中的杂质过滤，从而使进入的污水变成净水。</p>
+<p>对于WEB应用来说，过滤器是一个驻留在服务器中的WEB组件，他可以截取客户端和WEB资源之间的请求和响应信息。</p>
+<p>WEB资源可能包括Servlet、JSP、HTML页面等</p>
+<p><img src= data:image/gif;base64,R0lGODdhAQABAPAAAMPDwwAAACwAAAAAAQABAAACAkQBADs= data-src="https://cdn.jsdelivr.net/gh/uncle-he/blog-resource/img/filter1.png" alt="filter"></p>
+<p>当服务器收到特定的请求后，会先将请求交给过滤器，程序员可以在过滤器中对请求信息进行读取修改等操作，然后将请求信息再发送给目标资源。目标资源作出响应后，服务器会再次将响应转交给过滤器，在过滤器中同样可以对响应信息做一些操作，然后再将响应发送给服务器。</p>
+<p>也就是说过滤器可以在WEB资源收到请求之前，浏览器收到响应之前，对请求和响应信息做一些相应的操作。</p>
+<p>在一个WEB应用中可以部署多个过滤器，多个过滤器就组成了一个过滤器链，请求和响应必须在经过多个过滤器后才能到达目标；</p>
+<p><img src= data:image/gif;base64,R0lGODdhAQABAPAAAMPDwwAAACwAAAAAAQABAAACAkQBADs= data-src="https://cdn.jsdelivr.net/gh/uncle-he/blog-resource/img/filter2.png" alt="filter"></p>
+<p>过滤器不是必须将请求传送到下一个过滤器（或WEB资源），也可以自己来处理请求，发送响应。</p>
+<h1 id="Filter相关接口"><a href="#Filter相关接口" class="headerlink" title="Filter相关接口"></a>Filter相关接口</h1><p>编写Filter和编写Servlet类似，都需要实现接口。</p>
+<p>编写Filter需要实现Filter接口，我们来看一下Filter接口的主要方法：</p>
+<p><img src= data:image/gif;base64,R0lGODdhAQABAPAAAMPDwwAAACwAAAAAAQABAAACAkQBADs= data-src="https://cdn.jsdelivr.net/gh/uncle-he/blog-resource/img/filter3.png" alt="filter"></p>
+<ul>
+<li>Filter接口，实现Filter需要实现该接口<ul>
+<li>init()方法用于初始化Filter</li>
+<li>doFilter()作用和service()方法类似，是过滤请求和响应的主要方法</li>
+<li>destroy()用于在Filter对象被销毁前做一些收尾工作。如：释放资源等</li>
+</ul>
+</li>
+</ul>
+<p><img src= data:image/gif;base64,R0lGODdhAQABAPAAAMPDwwAAACwAAAAAAQABAAACAkQBADs= data-src="https://cdn.jsdelivr.net/gh/uncle-he/blog-resource/img/filter4.png" alt="filter"></p>
+<ul>
+<li>FilterConfig对象在服务器调用init()方法时传递进来<ul>
+<li>getFilterName() 获取Filter的名字</li>
+<li>getServletContext() 获取ServletContext对象（即application）</li>
+<li>getInitParameter() 获取Filter的初始化参数</li>
+<li>getInitParameterNames() 获取所有初始化参数的名字</li>
+</ul>
+</li>
+</ul>
+<p><img src= data:image/gif;base64,R0lGODdhAQABAPAAAMPDwwAAACwAAAAAAQABAAACAkQBADs= data-src="https://cdn.jsdelivr.net/gh/uncle-he/blog-resource/img/filter5.png" alt="filter"></p>
+<ul>
+<li>FilterChain对象是在doFilter()方法被调用时作为参数传递进来的<ul>
+<li>doFilter()方法用于调用Filter链上的下一个过滤器，如果当前过滤器为最后一个过滤器则将请求发送到目标资源</li>
+</ul>
+</li>
+</ul>
+<h1 id="创建Filter"><a href="#创建Filter" class="headerlink" title="创建Filter"></a>创建Filter</h1><h2 id="实现Filter接口"><a href="#实现Filter接口" class="headerlink" title="实现Filter接口"></a>实现Filter接口</h2><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">HelloFilter</span> <span class="keyword">implements</span> <span class="title">Filter</span> </span>&#123;</span><br><span class="line">  <span class="meta">@Override</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">init</span><span class="params">(FilterConfig filterConfig)</span> <span class="keyword">throws</span> ServletException </span>&#123;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="meta">@Override</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">doFilter</span><span class="params">(ServletRequest request, ServletResponse response, FilterChain chain)</span> <span class="keyword">throws</span> IOException, ServletException </span>&#123;</span><br><span class="line">    System.out.println(<span class="string">"Hello Filter"</span>);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="meta">@Override</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">destroy</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="在web-xml注册Filter"><a href="#在web-xml注册Filter" class="headerlink" title="在web.xml注册Filter"></a>在web.xml注册Filter</h2><figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">filter</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">filter-name</span>&gt;</span>HelloFilter<span class="tag">&lt;/<span class="name">filter-name</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">filter-class</span>&gt;</span>com.atguigu.web.filter.HelloFilter<span class="tag">&lt;/<span class="name">filter-class</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">filter</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">filter-mapping</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">filter-name</span>&gt;</span>HelloFilter<span class="tag">&lt;/<span class="name">filter-name</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">url-pattern</span>&gt;</span>/index.html<span class="tag">&lt;/<span class="name">url-pattern</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">filter-mapping</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>我们编写的这个Filter用来过滤发送到index.html的请求</p>
+<p>在doFilter()方法中我们只写了一个打印语句，并没有将请求转交给目标资源处理。</p>
+<p>所以这个过滤器的效果是我们将不能正常查看到index.html页面，在访问index.html时页面上将会是一片空白。同时，控制台将输出Hello Filter。</p>
+<p>如果想要index.html正确显示，需要在输出语句后，调用一个chain.doFilter(request, response)将请求放行。</p>
+<p>Filter的配置文件和Servlet的配置文件类似</p>
+<ul>
+<li>filter-name 指定的是过滤器的名字</li>
+<li>filter-class 指定的是过滤器的全类名</li>
+<li>url-pattern 指定的是需要过滤器处理的请求地址</li>
+</ul>
+<p>除此之外在filter-mapping还有一个子标签dispatcher，该标签用来指定需要Filter处理的请求类型，该标签可以配置四个值：</p>
+<ul>
+<li><p>&lt;dispatcher&gt;REQUEST&lt;/dispatcher&gt;</p>
+<p>用户直接访问资源时，会调用Filter</p>
+</li>
+<li><p>&lt;dispatcher&gt;FORWARD&lt;/dispatcher&gt;</p>
+<p>通过转发访问时，会调用Filter</p>
+</li>
+<li><p>&lt;dispatcher&gt;INCLUDE&lt;/dispatcher&gt;</p>
+<p>通过动态包含获取时，会调用Filter</p>
+</li>
+<li><p>&lt;dispatcher&gt;ERROR&lt;/dispatcher&gt;</p>
+<p>当通过异常处理访问页面时，会调用Filter</p>
+</li>
+</ul>
+<p>这四种情况可以设置一个，也可以同时设置多个，如果不设置那么默认为REQUEST</p>
+<h1 id="Filter的生命周期"><a href="#Filter的生命周期" class="headerlink" title="Filter的生命周期"></a>Filter的生命周期</h1><p>Filter的生命周期和Servlet类似</p>
+<ul>
+<li>构造器：创建Filter实例是调用，Filter实例服务器一旦启动就会被创建</li>
+<li>init()：实例创建后马上被调用，用来对Filter做一些初始化的操作</li>
+<li>doFilter()：Filter的主要方法，用来完成过滤器主要功能的方法，每次访问目标资源时都会调用</li>
+<li>destroy()：服务器停止时调用，用来释放资源</li>
+</ul>
+<h1 id="Filter的目标资源"><a href="#Filter的目标资源" class="headerlink" title="Filter的目标资源"></a>Filter的目标资源</h1><p>Filter的目标资源指的是需要调用Filter来进行过滤处理的资源，例如上文我们配置的/index.html就是我们的目标资源，当我们访问项目根目录下的index.html时就会调用HelloFilter来进行过滤</p>
+<p>目标资源的配置方式主要有两种：</p>
+<p><strong>第一种：</strong></p>
+<p>通过filter-mapping的url-pattern来配置</p>
+<p>这里的配置和Servlet的url-pattern的规则相同</p>
+<ul>
+<li><p>精确匹配：/路径/资源名</p>
+<blockquote>
+<p>如：/index.html 、/hello/index.jsp 、 /client/LoginServlet</p>
+</blockquote>
+<p>精确匹配只要在请求地址完全一样时才会调用Filter</p>
+</li>
+<li><p>路径匹配：/路径名/*</p>
+<blockquote>
+<p>如：/hello/* 、/*</p>
+</blockquote>
+<p>路径匹配只要是所请求的资源是在设置的路径下就会调用Filter</p>
+<ul>
+<li>如：/hello/* 只要访问 项目根目录/hello/ 下的任意资源就会调用Filter</li>
+<li>如: /* 只要访问 项目根目录下的资源就会调用Filter</li>
+</ul>
+</li>
+<li><p>后缀匹配：*.后缀名</p>
+<blockquote>
+<p>如：*.jsp 、 *.html</p>
+</blockquote>
+<p>后缀匹配只要访问的资源路径是以指定后缀结尾就会调用Filter</p>
+</li>
+</ul>
+<p><strong>第二种：</strong></p>
+<p>通过filter-mapping中的servlet-name来指定要过滤的Servlet</p>
+<p>如：以下是一个项目中的web.xml配置文件，在项目中有一个Filter叫做HelloFilter，一个Servlet叫做HelloServlet。在Filter的filter-mapping中增加了一个servlet-name标签，将该标签的值设置成Servlet的名字，在访问Servlet时就会调用该过滤器过滤请求。</p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">filter</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">filter-name</span>&gt;</span>HelloFilter<span class="tag">&lt;/<span class="name">filter-name</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">filter-class</span>&gt;</span>com.unclehe.web.filter.HelloFilter<span class="tag">&lt;/<span class="name">filter-class</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">filter</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">filter-mapping</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">filter-name</span>&gt;</span>HelloFilter<span class="tag">&lt;/<span class="name">filter-name</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">servlet-name</span>&gt;</span>HelloServlet<span class="tag">&lt;/<span class="name">servlet-name</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">filter-mapping</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">servlet</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">servlet-name</span>&gt;</span>HelloServlet<span class="tag">&lt;/<span class="name">servlet-name</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">servlet-class</span>&gt;</span>com.unclehe.web.servlet.HelloServlet<span class="tag">&lt;/<span class="name">servlet-class</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">servlet</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">servlet-mapping</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">servlet-name</span>&gt;</span>HelloServlet<span class="tag">&lt;/<span class="name">servlet-name</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">url-pattern</span>&gt;</span>/HelloServlet<span class="tag">&lt;/<span class="name">url-pattern</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">servlet-mapping</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h1 id="Filter的执行顺序"><a href="#Filter的执行顺序" class="headerlink" title="Filter的执行顺序"></a>Filter的执行顺序</h1><p>我们可以为一个资源配置多个Filter，当配置多个Filter以后就有一个执行顺序的问题，实际执行顺序是按照在web.xml文件中servlet-mapping的顺序决定的，如果顺序越靠前越先被调用</p>
+</div><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">Uncle He</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://www.unclehe.net/2020/07/12/java-filter/">https://www.unclehe.net/2020/07/12/java-filter/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://www.unclehe.net" target="_blank">Uncle He</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/JavaWeb/">JavaWeb</a></div><div class="post_share"><div class="social-share" data-image="https://cdn.jsdelivr.net/gh/uncle-he/blog-resource/img/cover/java.jpeg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css"/><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js"></script></div></div><div class="post-reward"><a class="reward-button button--primary button--animated"> <i class="fa fa-qrcode"></i> 打赏<div class="reward-main"><ul class="reward-all"><li class="reward-item"><img class="post-qr-code__img" src="https://cdn.jsdelivr.net/gh/uncle-he/blog-resource/img/wechat.jpg" alt="wechat"/><div class="post-qr-code__desc">wechat</div></li><li class="reward-item"><img class="post-qr-code__img" src="https://cdn.jsdelivr.net/gh/uncle-he/blog-resource/img/alipay.jpg" alt="alipay"/><div class="post-qr-code__desc">alipay</div></li></ul></div></a></div><nav class="pagination_post" id="pagination"><div class="prev-post pull_left"><a href="/2020/07/13/java-listener/"><img class="prev_cover" data-src="https://cdn.jsdelivr.net/gh/uncle-he/blog-resource/img/cover/java.jpeg" onerror="onerror=null;src='/img/404.jpg'"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">Listener</div></div></a></div><div class="next-post pull_right"><a href="/2020/07/11/java-cookie-session/"><img class="next_cover" data-src="https://cdn.jsdelivr.net/gh/uncle-he/blog-resource/img/cover/java.jpeg" onerror="onerror=null;src='/img/404.jpg'"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">Cookie和Session</div></div></a></div></nav><div class="relatedPosts"><div class="relatedPosts_headline"><i class="fa fa-fw fa-thumbs-up" aria-hidden="true"></i><span> 相关推荐</span></div><div class="relatedPosts_list"><div class="relatedPosts_item"><a href="/2020/07/14/java-ajax/" title="Ajax"><img class="relatedPosts_cover" data-src="https://cdn.jsdelivr.net/gh/uncle-he/blog-resource/img/cover/java.jpeg"><div class="relatedPosts_main is-center"><div class="relatedPosts_date"><i class="fa fa-calendar fa-fw" aria-hidden="true"></i> 2020-07-14</div><div class="relatedPosts_title">Ajax</div></div></a></div><div class="relatedPosts_item"><a href="/2020/07/11/java-cookie-session/" title="Cookie和Session"><img class="relatedPosts_cover" data-src="https://cdn.jsdelivr.net/gh/uncle-he/blog-resource/img/cover/java.jpeg"><div class="relatedPosts_main is-center"><div class="relatedPosts_date"><i class="fa fa-calendar fa-fw" aria-hidden="true"></i> 2020-07-11</div><div class="relatedPosts_title">Cookie和Session</div></div></a></div><div class="relatedPosts_item"><a href="/2020/07/09/java-el/" title="EL表达式"><img class="relatedPosts_cover" data-src="https://cdn.jsdelivr.net/gh/uncle-he/blog-resource/img/cover/java.jpeg"><div class="relatedPosts_main is-center"><div class="relatedPosts_date"><i class="fa fa-calendar fa-fw" aria-hidden="true"></i> 2020-07-09</div><div class="relatedPosts_title">EL表达式</div></div></a></div><div class="relatedPosts_item"><a href="/2020/07/08/java-http/" title="HTTP"><img class="relatedPosts_cover" data-src="https://cdn.jsdelivr.net/gh/uncle-he/blog-resource/img/cover/http.jpg"><div class="relatedPosts_main is-center"><div class="relatedPosts_date"><i class="fa fa-calendar fa-fw" aria-hidden="true"></i> 2020-07-08</div><div class="relatedPosts_title">HTTP</div></div></a></div><div class="relatedPosts_item"><a href="/2020/07/15/java-file-upload/" title="文件的上传和下载"><img class="relatedPosts_cover" data-src="https://cdn.jsdelivr.net/gh/uncle-he/blog-resource/img/cover/java.jpeg"><div class="relatedPosts_main is-center"><div class="relatedPosts_date"><i class="fa fa-calendar fa-fw" aria-hidden="true"></i> 2020-07-15</div><div class="relatedPosts_title">文件的上传和下载</div></div></a></div><div class="relatedPosts_item"><a href="/2020/07/09/java-jsp/" title="JSP"><img class="relatedPosts_cover" data-src="https://cdn.jsdelivr.net/gh/uncle-he/blog-resource/img/cover/java.jpeg"><div class="relatedPosts_main is-center"><div class="relatedPosts_date"><i class="fa fa-calendar fa-fw" aria-hidden="true"></i> 2020-07-09</div><div class="relatedPosts_title">JSP</div></div></a></div></div><div class="clear_both"></div></div><hr><div id="post-comment"><div class="comment_headling"><i class="fa fa-comments fa-fw" aria-hidden="true"></i><span> 评论</span></div><div class="vcomment" id="vcomment"></div><script src="https://cdn.jsdelivr.net/npm/valine/dist/Valine.min.js"></script><script>var requestSetting = function (from,set) {
+  var from = from
+  var setting = set.split(',').filter(function(item){
+  return from.indexOf(item) > -1
+  });
+  setting = setting.length == 0 ? from :setting;
+  return setting
+}
+
+var guestInfo = requestSetting(['nick','mail','link'],'nick,mail,link')
+var requiredFields = requestSetting(['nick','mail','link'],'nick,mail')
+
+window.valine = new Valine({
+  el:'#vcomment',
+  appId: 'kJLrzEh54hbM7O4kjF6VhlAt-MdYXbMMI',
+  appKey: 'wbsLMRTmGNJ2wpVv2Xtvo17B',
+  notify: false,
+  verify: false,
+  placeholder: '昵称请填写QQ号会自动获取头像和昵称...',
+  avatar: 'monsterid',
+  meta: guestInfo,
+  pageSize: '10',
+  lang: 'zh-CN',
+  recordIP: false,
+  serverURLs: '',
+  emojiCDN: '',
+  emojiMaps: "",
+  enableQQ: true,
+  requiredFields: requiredFields
+});</script></div></article></main><footer id="footer" style="background-image: url(https://cdn.jsdelivr.net/gh/uncle-he/blog-resource/img/cover/java.jpeg)" data-type="photo"><div id="footer-wrap"><div class="copyright">&copy;2020 By Uncle He</div><div class="framework-info"><span>驱动 </span><a href="https://hexo.io" target="_blank" rel="noopener"><span>Hexo</span></a><span class="footer-separator">|</span><span>主题 </span><a href="https://github.com/jerryc127/hexo-theme-butterfly" target="_blank" rel="noopener"><span>Butterfly</span></a></div><div class="footer_custom_text">Hi, welcome to my <a href="https://www.unclehe.net/">blog</a>!</div></div></footer></div><section class="rightside" id="rightside"><div id="rightside-config-hide"><i class="fa fa-book" id="readmode" title="阅读模式"></i><i class="fa fa-plus" id="font_plus" title="放大字体"></i><i class="fa fa-minus" id="font_minus" title="缩小字体"></i><a class="translate_chn_to_cht" id="translateLink" href="javascript:translatePage();" title="简繁转换" target="_self">简</a><i class="darkmode far fa-moon" id="darkmode" title="夜间模式"></i></div><div id="rightside-config-show"><div id="rightside_config" title="设置"><i class="fa fa-cog" aria-hidden="true"></i></div><a id="to_comment" href="#post-comment" title="直达评论"><i class="scroll_to_comment fa fa-comments">  </i></a><i class="fa fa-list-ul close" id="mobile-toc-button" title="目录" aria-hidden="true"></i><i class="fa fa-arrow-up" id="go-up" title="回到顶部" aria-hidden="true"></i></div></section><div class="search-dialog" id="local-search"><div class="search-dialog__title" id="local-search-title">本地搜索</div><div id="local-input-panel"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div></div><hr/><div id="local-search-results"><div id="local-hits"></div><div id="local-stats"><div class="local-search-stats__hr" id="hr"><span>由</span> <a href="https://github.com/wzpan/hexo-generator-search" target="_blank" rel="noopener" style="color:#49B1F5;">hexo-generator-search</a>
+ <span>提供支持</span></div></div></div><span class="search-close-button"><i class="fa fa-times"></i></span></div><div class="search-mask"></div><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="/js/tw_cn.js"></script><script src="https://cdn.jsdelivr.net/npm/medium-zoom/dist/medium-zoom.min.js"></script><script src="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.js"></script><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><script src="https://cdn.jsdelivr.net/npm/instant.page@3/instantpage.min.js" type="module"></script><script src="https://cdn.jsdelivr.net/npm/lozad/dist/lozad.min.js"></script><script src="/js/search/local-search.js"></script><script src="https://cdn.jsdelivr.net/gh/uncle-he/blog-resource/js/customjs.js"></script></body></html>

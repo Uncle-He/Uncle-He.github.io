@@ -1,0 +1,357 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><title>文件的上传和下载 | Uncle He</title><meta name="description" content="简介文件的上传和下载在web应用中是非常常用，也是非常有用的功能 例如：发送电子邮件时可以同过上传附件发送文件，OA系统中可以通过上传文件来提交公文，社交网站通过上传图片来自定义头像等等。 例如：下载实际上只要资源放在用户可访问的目录中用户就可以直接通过地址下载，但是一些资源是存放到数据库中的，还有一些资源需要一定权限才能下载，这里就需要我们通过Servlet来完成下载的功能。 可以说上传和下载是"><meta name="keywords" content="JavaWeb"><meta name="author" content="Uncle He"><meta name="copyright" content="Uncle He"><meta name="format-detection" content="telephone=no"><link rel="shortcut icon" href="https://cdn.jsdelivr.net/gh/uncle-he/blog-resource/img/favicon.ico"><meta http-equiv="Cache-Control" content="no-transform"><meta http-equiv="Cache-Control" content="no-siteapp"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="dns-prefetch" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="https://fonts.googleapis.com" crossorigin="crossorigin"/><link rel="dns-prefetch" href="https://fonts.googleapis.com"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="dns-prefetch" href="//busuanzi.ibruce.info"/><meta name="twitter:card" content="summary"><meta name="twitter:title" content="文件的上传和下载"><meta name="twitter:description" content="简介文件的上传和下载在web应用中是非常常用，也是非常有用的功能 例如：发送电子邮件时可以同过上传附件发送文件，OA系统中可以通过上传文件来提交公文，社交网站通过上传图片来自定义头像等等。 例如：下载实际上只要资源放在用户可访问的目录中用户就可以直接通过地址下载，但是一些资源是存放到数据库中的，还有一些资源需要一定权限才能下载，这里就需要我们通过Servlet来完成下载的功能。 可以说上传和下载是"><meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/uncle-he/blog-resource/img/cover/java.jpeg"><meta property="og:type" content="article"><meta property="og:title" content="文件的上传和下载"><meta property="og:url" content="https://www.unclehe.net/2020/07/15/java-file-upload/"><meta property="og:site_name" content="Uncle He"><meta property="og:description" content="简介文件的上传和下载在web应用中是非常常用，也是非常有用的功能 例如：发送电子邮件时可以同过上传附件发送文件，OA系统中可以通过上传文件来提交公文，社交网站通过上传图片来自定义头像等等。 例如：下载实际上只要资源放在用户可访问的目录中用户就可以直接通过地址下载，但是一些资源是存放到数据库中的，还有一些资源需要一定权限才能下载，这里就需要我们通过Servlet来完成下载的功能。 可以说上传和下载是"><meta property="og:image" content="https://cdn.jsdelivr.net/gh/uncle-he/blog-resource/img/cover/java.jpeg"><meta property="article:published_time" content="2020-07-15T03:06:12.000Z"><meta property="article:modified_time" content="2020-07-15T03:40:04.225Z"><script src="https://cdn.jsdelivr.net/npm/js-cookie/dist/js.cookie.min.js"></script><script>var autoChangeMode = 'false'
+var t = Cookies.get("theme")
+if (autoChangeMode == '1'){
+  var isDarkMode = window.matchMedia("(prefers-color-scheme: dark)").matches
+  var isLightMode = window.matchMedia("(prefers-color-scheme: light)").matches
+  var isNotSpecified = window.matchMedia("(prefers-color-scheme: no-preference)").matches
+  var hasNoSupport = !isDarkMode && !isLightMode && !isNotSpecified
+
+  if (t === undefined){
+    if (isLightMode) activateLightMode()
+    else if (isDarkMode) activateDarkMode()
+    else if (isNotSpecified || hasNoSupport){
+      console.log('You specified no preference for a color scheme or your browser does not support it. I Schedule dark mode during night time.')
+      var now = new Date()
+      var hour = now.getHours()
+      var isNight = hour < 6 || hour >= 18
+      isNight ? activateDarkMode() : activateLightMode()
+  }
+  } else if (t == 'light') activateLightMode()
+  else activateDarkMode()
+
+} else if (autoChangeMode == '2'){
+  now = new Date();
+  hour = now.getHours();
+  isNight = hour < 6 || hour >= 18
+  if(t === undefined) isNight? activateDarkMode() : activateLightMode()
+  else if (t === 'light') activateLightMode()
+  else activateDarkMode() 
+} else {
+  if ( t == 'dark' ) activateDarkMode()
+  else if ( t == 'light') activateLightMode()
+}
+
+function activateDarkMode(){
+  document.documentElement.setAttribute('data-theme', 'dark')
+  if (document.querySelector('meta[name="theme-color"]') !== null){
+    document.querySelector('meta[name="theme-color"]').setAttribute('content','#000')
+  }
+}
+function activateLightMode(){
+  document.documentElement.setAttribute('data-theme', 'light')
+  if (document.querySelector('meta[name="theme-color"]') !== null){
+  document.querySelector('meta[name="theme-color"]').setAttribute('content','#fff')
+  }
+}</script><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.css"><link rel="canonical" href="https://www.unclehe.net/2020/07/15/java-file-upload/"><link rel="next" title="Ajax" href="https://www.unclehe.net/2020/07/14/java-ajax/"><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Titillium+Web"><script>var GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"search.xml","languages":{"hits_empty":"找不到您查询的内容:${query}"}},
+  translate: {"defaultEncoding":1,"translateDelay":0,"cookieDomain":"https://unclehe.net/","msgToTraditionalChinese":"繁","msgToSimplifiedChinese":"简"},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  bookmark: {
+    message_prev: '按',
+    message_next: '键将本页加入书签'
+  },
+  runtime_unit: '天',
+  runtime: true,
+  copyright: {"languages":{"author":"作者: Uncle He","link":"链接: ","source":"来源: Uncle He","info":"著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。"}},
+  ClickShowText: undefined,
+  medium_zoom: true,
+  fancybox: false,
+  Snackbar: {"bookmark":{"message_prev":"按","message_next":"键将本页加入书签"},"chs_to_cht":"你已切换为繁体","cht_to_chs":"你已切换为简体","day_to_night":"你已切换为深色模式","night_to_day":"你已切换为浅色模式","bgLight":"#49b1f5","bgDark":"#2d3035","position":"top-right"},
+  baiduPush: false,
+  highlightCopy: true,
+  highlightLang: true,
+  highlightShrink: 'true',
+  isFontAwesomeV5: true,
+  isPhotoFigcaption: false,
+  islazyload: true,
+  isanchor: false
+  
+}</script><script>var GLOBAL_CONFIG_SITE = { 
+  isPost: true,
+  isHome: false,
+  isSidebar: true  
+  }</script><noscript><style>
+#page-header {
+  opacity: 1
+}
+.justified-gallery img{
+  opacity: 1
+}
+</style></noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/uncle-he/blog-resource/css/customcss.css"><meta name="generator" content="Hexo 4.2.1"></head><body><div id="mobile-sidebar"><div id="menu_mask"></div><div id="mobile-sidebar-menus"><div class="mobile_author_icon"><img class="avatar-img" src="https://cdn.jsdelivr.net/gh/uncle-he/blog-resource/img/avatar.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="mobile_post_data"><div class="mobile_data_item is-center"><div class="mobile_data_link"><a href="/archives/"><div class="headline">文章</div><div class="length_num">29</div></a></div></div><div class="mobile_data_item is-center">      <div class="mobile_data_link"><a href="/tags/"><div class="headline">标签</div><div class="length_num">15</div></a></div></div><div class="mobile_data_item is-center">     <div class="mobile_data_link"><a href="/categories/"><div class="headline">分类</div><div class="length_num">17</div></a></div></div></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fa fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fa fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fa fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fa fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fa fa-heart"></i><span> 关于</span></a></div><div class="menus_item"><a class="site-page" href="https://unclehe.gitee.io" target="_blank" rel="noopener"><i class="fa-fw fa fa-toolbox"></i><span> 百宝箱</span></a></div><div class="menus_item"><a class="site-page" href="/messageboard/"><i class="fa-fw fa fa-coffee"></i><span> 留言板</span></a></div></div></div></div><i class="fa fa-arrow-right on" id="toggle-sidebar" aria-hidden="true">     </i><div id="sidebar"><div class="sidebar-toc"><div class="sidebar-toc__title">目录</div><div class="sidebar-toc__progress"><span class="progress-notice">你已经读了</span><span class="progress-num">0</span><span class="progress-percentage">%</span><div class="sidebar-toc__progress-bar">     </div></div><div class="sidebar-toc__content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#简介"><span class="toc-number">1.</span> <span class="toc-text">简介</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#文件的上传"><span class="toc-number">2.</span> <span class="toc-text">文件的上传</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#创建上传文件的表单"><span class="toc-number">2.1.</span> <span class="toc-text">创建上传文件的表单</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#commons-fileupload"><span class="toc-number">2.1.1.</span> <span class="toc-text">commons-fileupload</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#文件的下载"><span class="toc-number">3.</span> <span class="toc-text">文件的下载</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#步骤："><span class="toc-number">3.1.</span> <span class="toc-text">步骤：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#乱码："><span class="toc-number">3.2.</span> <span class="toc-text">乱码：</span></a></li></ol></li></ol></div></div></div><div id="body-wrap"><div class="post-bg" id="nav" style="background-image: url(https://cdn.jsdelivr.net/gh/uncle-he/blog-resource/img/cover/java.jpeg)"><div id="page-header"><span class="pull_left" id="blog_name"><a class="blog_title" id="site-name" href="/">Uncle He</a></span><span class="pull_right menus"><div id="search_button"><a class="site-page social-icon search"><i class="fa fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fa fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fa fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fa fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fa fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fa fa-heart"></i><span> 关于</span></a></div><div class="menus_item"><a class="site-page" href="https://unclehe.gitee.io" target="_blank" rel="noopener"><i class="fa-fw fa fa-toolbox"></i><span> 百宝箱</span></a></div><div class="menus_item"><a class="site-page" href="/messageboard/"><i class="fa-fw fa fa-coffee"></i><span> 留言板</span></a></div></div><span class="toggle-menu close"><a class="site-page"><i class="fa fa-bars fa-fw" aria-hidden="true"></i></a></span></span></div><div id="post-info"><div id="post-title"><div class="posttitle">文件的上传和下载</div></div><div id="post-meta"><div class="meta-firstline"><time class="post-meta__date"><span class="post-meta__date-created" title="发表于 2020-07-15 11:06:12"><i class="fa fa-calendar" aria-hidden="true"></i> 发表于 2020-07-15</span><span class="post-meta__separator">|</span><span class="post-meta__date-updated" title="更新于 2020-07-15 11:40:04"><i class="fa fa-history" aria-hidden="true"></i> 更新于 2020-07-15</span></time><span class="post-meta__categories"><span class="post-meta__separator">|</span><i class="fa fa-inbox post-meta__icon" aria-hidden="true"></i><a class="post-meta__categories" href="/categories/%E8%87%AA%E5%AD%A6Java/">自学Java</a><i class="fa fa-angle-right post-meta__separator" aria-hidden="true"></i><i class="fa fa-inbox post-meta__icon" aria-hidden="true"></i><a class="post-meta__categories" href="/categories/%E8%87%AA%E5%AD%A6Java/JavaWeb/">JavaWeb</a></span></div><div class="meta-secondline"> <span class="post-meta-wordcount"><i class="post-meta__icon far fa-file-word" aria-hidden="true"></i><span>字数总计:</span><span class="word-count">2.5k</span><span class="post-meta__separator">|</span><i class="post-meta__icon far fa-clock" aria-hidden="true"></i><span>阅读时长: 8 分钟</span></span></div><div class="meta-thirdline"><span class="post-meta-pv-cv"><span class="post-meta__separator">|</span><i class="fa fa-eye post-meta__icon" aria-hidden="true"> </i><span>阅读量:</span><span id="busuanzi_value_page_pv"></span></span><span class="post-meta-commentcount"><span class="post-meta__separator">|</span><i class="post-meta__icon far fa-comments" aria-hidden="true"></i><span>评论数:</span><a href="/2020/07/15/java-file-upload/#post-comment" itemprop="discussionUrl"><span class="valine-comment-count comment-count" data-xid="/2020/07/15/java-file-upload/" itemprop="commentCount"></span></a></span></div></div></div></div><main class="layout_post" id="content-inner"><article id="post"><div class="post-content" id="article-container"><h1 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h1><p>文件的上传和下载在web应用中是非常常用，也是非常有用的功能</p>
+<p>例如：发送电子邮件时可以同过上传附件发送文件，OA系统中可以通过上传文件来提交公文，社交网站通过上传图片来自定义头像等等。</p>
+<p>例如：下载实际上只要资源放在用户可访问的目录中用户就可以直接通过地址下载，但是一些资源是存放到数据库中的，还有一些资源需要一定权限才能下载，这里就需要我们通过Servlet来完成下载的功能。</p>
+<p>可以说上传和下载是每一个web应用都需要具有的一个功能，所以需要我们掌握。</p>
+<h1 id="文件的上传"><a href="#文件的上传" class="headerlink" title="文件的上传"></a>文件的上传</h1><p>文件的上传主要分成两个步骤</p>
+<ul>
+<li>用户在页面中选择要上传的文件，然后将请求提交到Servlet</li>
+<li>Servlet收到请求，解析用户上传的文件，然后将文件存储到服务器</li>
+</ul>
+<h2 id="创建上传文件的表单"><a href="#创建上传文件的表单" class="headerlink" title="创建上传文件的表单"></a>创建上传文件的表单</h2><ol>
+<li>创建一个form表单</li>
+</ol>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">form</span> <span class="attr">action</span>=<span class="string">""</span> <span class="attr">method</span>=<span class="string">"post"</span> <span class="attr">enctype</span>=<span class="string">"multipart/form-data"</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"file"</span> <span class="attr">name</span>=<span class="string">"file"</span> /&gt;</span><span class="tag">&lt;<span class="name">br</span> /&gt;</span><span class="tag">&lt;<span class="name">br</span> /&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"submit"</span> <span class="attr">value</span>=<span class="string">"上传"</span> /&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">form</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>文件上传的表单和之前的表单类似，但有以下内容需要注意</p>
+<ul>
+<li>表单的method属性必须为post</li>
+<li>表单的enctype属性必须为multipart/form-data</li>
+<li>上传文件的控件是input，type属性为file</li>
+</ul>
+</li>
+<li><p>该表单打开后是如下效果：</p>
+<ul>
+<li><p>IE</p>
+<p><img src= data:image/gif;base64,R0lGODdhAQABAPAAAMPDwwAAACwAAAAAAQABAAACAkQBADs= data-src="https://cdn.jsdelivr.net/gh/uncle-he/blog-resource/img/fileupload1.png" alt="fileUpload"></p>
+</li>
+<li><p>Chrome</p>
+<p><img src= data:image/gif;base64,R0lGODdhAQABAPAAAMPDwwAAACwAAAAAAQABAAACAkQBADs= data-src="https://cdn.jsdelivr.net/gh/uncle-he/blog-resource/img/fileupload2.png" alt="fileUpload"></p>
+</li>
+<li><p>火狐</p>
+<p><img src= data:image/gif;base64,R0lGODdhAQABAPAAAMPDwwAAACwAAAAAAQABAAACAkQBADs= data-src="https://cdn.jsdelivr.net/gh/uncle-he/blog-resource/img/fileupload3.png" alt="fileUpload"></p>
+</li>
+</ul>
+</li>
+</ul>
+<ol start="2">
+<li>编写Servelet</li>
+</ol>
+<ul>
+<li>页面的表单控件创建好以后，选中文件点击上传按钮请求将会提交到指定的Servlet来处理。</li>
+<li>注意：这里不能再像以前的Servlet中那样，通过request.getParamter()来获取请求参数了，当<code>enctype=&quot;multipart/form-data&quot;</code>时，再使用getParamter()获取到内容永远为空。因为浏览器发送请求的方式已经改变。</li>
+<li>既然以前的方法不能使用了，这里我们必须要引入一个新的工具来解析请求中的参数和文件，这个工具就是commons-fileupload。</li>
+</ul>
+<h3 id="commons-fileupload"><a href="#commons-fileupload" class="headerlink" title="commons-fileupload"></a>commons-fileupload</h3><p>commons-fileupload是Apache开发的一款专门用来处理上传的工具，它的作用就是可以从request对象中解析出，用户发送的请求参数和上传文件的流。</p>
+<p>commons-fileupload包依赖commons-io，两个包需要同时导入。</p>
+<p><strong>核心类：</strong></p>
+<p>DiskFileItemFactory</p>
+<ul>
+<li><p>工厂类，用于创建ServletFileUpload，设置缓存等</p>
+</li>
+<li><p>该类一般直接使用构造器直接创建实例</p>
+</li>
+<li><p>方法：</p>
+<ul>
+<li><p>public void setSizeThreshold(int sizeThreshold)</p>
+<p>用于设置缓存文件的大小（默认值10kb）</p>
+</li>
+<li><p>public void setRepository(File repository)</p>
+<p>用于设置缓存文件位置（默认系统缓存目录）</p>
+</li>
+</ul>
+</li>
+</ul>
+<p>ServletFileUpload</p>
+<ul>
+<li><p>该类用于解析request对象从而获取用户发送的请求参数（包括普通参数和文件参数）</p>
+</li>
+<li><p>该类需要调用有参构造器创建实例，构造器中需要一个DiskFileItemFactory作为参数</p>
+</li>
+<li><p>方法：</p>
+<ul>
+<li><p>public List&lt;FileItem&gt; parseRequest(HttpServletRequest request)</p>
+<p>解析request对象，获取请求参数，返回的是一个List，List中保存的是一个FileItem对象，一个对象代表一个请求参数。</p>
+</li>
+<li><p>public void setFileSizeMax(long fileSizeMax)</p>
+<p>设置单个文件的大小限制，单位为B</p>
+<p>如果上传文件超出限制，会在parseRequest()抛出异常</p>
+<ul>
+<li>FileSizeLimitExceededException</li>
+</ul>
+</li>
+<li><p>public void setSizeMax(long sizeMax)</p>
+<p>限制请求内容的总大小，单位为B</p>
+<p>如果上传文件超出限制，会在parseRequest()抛出异常</p>
+<ul>
+<li>SizeLimitExceededException</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<ol start="3">
+<li>FileItem</li>
+</ol>
+<ul>
+<li><p>该类用于封装用户发送的参数和文件，也就是用户发送来的信息将会被封装成一个FileItem对象，我们通过该对象获取请求参数或上传文件的信息。</p>
+</li>
+<li><p>该类不用我们手动创建，由ServletFileItem解析request后返回。</p>
+</li>
+<li><p>方法：</p>
+<ul>
+<li><p>String getFieldName()</p>
+<p>获取表单项的名字，也就是input当中的name属性的值</p>
+</li>
+<li><p>String getName()</p>
+<p>获取上传的文件名，普通的请求参数为null</p>
+</li>
+<li><p>String getString(String encoding)</p>
+<p>获取内容</p>
+<ul>
+<li>若为文件，将文件的流转换为字符串</li>
+<li>若为请求参数，则获取请求参数的value</li>
+</ul>
+<p>encoding参数需要指定一个字符集</p>
+</li>
+<li><p>boolean isFormField()</p>
+<p>判断当前的FileItem封装的是普通请求参数，还是一个文件</p>
+<ul>
+<li>如果为普通参数返回：true</li>
+<li>如果为文件参数返回：false</li>
+</ul>
+</li>
+<li><p>String getContentType()</p>
+<p>获取上传文件的MIME类型</p>
+</li>
+<li><p>long getSize();</p>
+<p>获取内容的大小</p>
+</li>
+</ul>
+</li>
+</ul>
+<p>实例代码，创建一个Servlet并在doPost()方法中编写如下代码:</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">//创建工厂类</span></span><br><span class="line">DiskFileItemFactory factory = <span class="keyword">new</span> DiskFileItemFactory();</span><br><span class="line"><span class="comment">//创建请求解析器</span></span><br><span class="line">ServletFileUpload fileUpload = <span class="keyword">new</span> ServletFileUpload(factory);</span><br><span class="line"><span class="comment">//设置上传单个文件的的大小</span></span><br><span class="line">fileUpload.setFileSizeMax(<span class="number">1024</span>*<span class="number">1024</span>*<span class="number">3</span>);</span><br><span class="line"><span class="comment">//设置上传总文件的大小</span></span><br><span class="line">fileUpload.setSizeMax(<span class="number">1024</span>*<span class="number">1024</span>*<span class="number">3</span>*<span class="number">10</span>);</span><br><span class="line"><span class="comment">//设置响应内容的编码</span></span><br><span class="line">response.setContentType(<span class="string">"text/html;charset=utf-8"</span>);</span><br><span class="line"><span class="keyword">try</span> &#123;</span><br><span class="line">  <span class="comment">//解析请求信息，获取FileItem的集合</span></span><br><span class="line">  List&lt;FileItem&gt; items = fileUpload.parseRequest(request);</span><br><span class="line">  <span class="comment">//遍历集合</span></span><br><span class="line">  <span class="keyword">for</span> (FileItem fileItem : items) &#123;</span><br><span class="line">    <span class="comment">//如果是普通的表单项</span></span><br><span class="line">    <span class="keyword">if</span>(fileItem.isFormField())&#123;</span><br><span class="line">      <span class="comment">//获取参数名</span></span><br><span class="line">      String fieldName = fileItem.getFieldName();</span><br><span class="line">      <span class="comment">//获取参数值</span></span><br><span class="line">      String value = fileItem.getString(<span class="string">"utf-8"</span>);</span><br><span class="line">      System.out.println(fieldName+<span class="string">" = "</span>+value);</span><br><span class="line">      <span class="comment">//如果是文件表单项</span></span><br><span class="line">    &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">      <span class="comment">//获取文件名</span></span><br><span class="line">      String fileName = fileItem.getName();</span><br><span class="line">      <span class="comment">//获取上传路径</span></span><br><span class="line">      String realPath = getServletContext().getRealPath(<span class="string">"/WEB-INF/upload"</span>);</span><br><span class="line">      <span class="comment">//检查upload文件夹是否存在，如果不存在则创建</span></span><br><span class="line">      File f = <span class="keyword">new</span> File(realPath);</span><br><span class="line">      <span class="keyword">if</span>(!f.exists())&#123;</span><br><span class="line">        f.mkdir();</span><br><span class="line">      &#125;;</span><br><span class="line">      <span class="comment">//为避免重名生成一个uuid作为文件名的前缀</span></span><br><span class="line">      String prefix = UUID.randomUUID().toString().replace(<span class="string">"-"</span>, <span class="string">""</span>);</span><br><span class="line">      <span class="comment">//将文件写入到服务器中</span></span><br><span class="line">      fileItem.write(<span class="keyword">new</span> File(realPath+<span class="string">"/"</span>+prefix+<span class="string">"_"</span>+fileName));</span><br><span class="line">      <span class="comment">//清楚文件缓存</span></span><br><span class="line">      fileItem.delete();</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">  <span class="keyword">if</span>(e <span class="keyword">instanceof</span> SizeLimitExceededException)&#123;</span><br><span class="line">    <span class="comment">//文件总大小超出限制</span></span><br><span class="line">    response.getWriter().print(<span class="string">"上传文件的总大小不能超过30M"</span>);</span><br><span class="line">  &#125;<span class="keyword">else</span> <span class="keyword">if</span>(e <span class="keyword">instanceof</span> FileSizeLimitExceededException)&#123;</span><br><span class="line">    <span class="comment">//单个文件大小超出限制</span></span><br><span class="line">    response.getWriter().print(<span class="string">"上传单个文件的大小不能超过3M"</span>);</span><br><span class="line">  &#125;</span><br><span class="line">&#125; </span><br><span class="line">response.getWriter().print(<span class="string">"上传成功"</span>);</span><br></pre></td></tr></table></figure>
+
+
+
+<h1 id="文件的下载"><a href="#文件的下载" class="headerlink" title="文件的下载"></a>文件的下载</h1><p>文件下载最直接的方法就是把文件直接放到服务器的目录中，用户直接访问该文件就可以直接下载。</p>
+<p>但是实际上这种方式并不一定好用，比如我们在服务器上直接放置一个MP3文件，然后通过浏览器访问该文件的地址，如果是IE浏览器可能就会弹出下载窗口，而如果是FireFox和Chrome则有可能直接播放。再有就是有一些文件我们是不希望用户可以直接访问到的，这是我们就要通过Servlet来完成下载功能。</p>
+<p><strong>下载文件的关键是几点：</strong></p>
+<ol>
+<li>服务器以一个流的形式将文件发送给浏览器。</li>
+<li>发送流的同时还需要设置几个响应头，来告诉浏览器下载的信息。</li>
+</ol>
+<ul>
+<li>具体响应头如下：<ul>
+<li>Content-Type<ul>
+<li>下载文件的MIME类型</li>
+<li>可以通过servletContext. getMimeType(String file)获取</li>
+<li>也可以直接手动指定</li>
+<li>使用response.setContentType(String type);</li>
+<li>响应头样式：<ul>
+<li>Content-Type: audio/mpeg</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Content-Disposition<ul>
+<li>下载文件的名字，主要作用是提供一个默认的用户名</li>
+<li>通过response.setHeader(“Content-Disposition”, disposition)设置</li>
+<li>响应头样式：<ul>
+<li>Content-Disposition: attachment; filename=xxx.mp3</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Content-Length<ul>
+<li>下载文件的长度，用于设置文件的长处（不必须）</li>
+<li>通过response. setContentLength(int len)设置。</li>
+<li>设置后样式：<ul>
+<li>Content-Length: 3140995</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<ol start="3">
+<li>接下来需要以输入流的形式读入硬盘上的文件</li>
+</ol>
+<ul>
+<li>FileInputStream is = new FileInputStream(file);</li>
+<li>这个流就是我们一会要发送给浏览器的内容</li>
+</ul>
+<ol start="4">
+<li>通过response获取一个输出流，并将文件（输入流）通过该流发送给浏览器</li>
+</ol>
+<ul>
+<li><p>获取输出流</p>
+<ul>
+<li>ServletOutputStream out = response.getOutputStream();</li>
+</ul>
+</li>
+<li><p>通过输出流向浏览器发送文件（不要忘了关闭输入流）</p>
+</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">byte</span>[] b = <span class="keyword">new</span> <span class="keyword">byte</span>[<span class="number">1024</span>];</span><br><span class="line"><span class="keyword">int</span> len = <span class="number">0</span>;</span><br><span class="line"><span class="keyword">while</span>((len=is.read(b))&gt; <span class="number">0</span>)&#123;</span><br><span class="line">	out.write(b, <span class="number">0</span>, len);</span><br><span class="line">&#125;</span><br><span class="line">is.close();</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="步骤："><a href="#步骤：" class="headerlink" title="步骤："></a>步骤：</h2><p>一下步骤都是在同一个Servlet的doGet()方法中编写的</p>
+<p>我所下载的文件是放在WEB-INF下mp3文件夹中的文件</p>
+<p>具体步骤</p>
+<ol>
+<li>获取文件的流</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">String realPath = getServletContext().getRealPath(<span class="string">"/WEB-INF/mp3/中国话.mp3"</span>);</span><br><span class="line"><span class="comment">//获取文件的File对象</span></span><br><span class="line">File file = <span class="keyword">new</span> File(realPath);</span><br><span class="line"><span class="comment">//获取文件的输入流</span></span><br><span class="line">FileInputStream is = <span class="keyword">new</span> FileInputStream(file);</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>获取头信息</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">//获取文件的MIME信息</span></span><br><span class="line">String contentType = getServletContext().getMimeType(realPath);</span><br><span class="line"><span class="comment">//设置下载文件的名字</span></span><br><span class="line">String filename = <span class="string">"zhongguohua.mp3"</span>;</span><br><span class="line"><span class="comment">//创建Content-Disposition信息</span></span><br><span class="line">String disposition = <span class="string">"attachment; filename="</span>+ filename ;</span><br><span class="line"><span class="comment">//获取文件长度</span></span><br><span class="line"><span class="keyword">long</span> size = file.length();</span><br></pre></td></tr></table></figure>
+
+<ol start="3">
+<li>设置头信息</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">//设置Content-Type</span></span><br><span class="line">response.setContentType(contentType);</span><br><span class="line"><span class="comment">//设置Content-Disposition</span></span><br><span class="line">response.setHeader(<span class="string">"Content-Disposition"</span>, disposition);</span><br><span class="line"><span class="comment">//设置文件长度</span></span><br><span class="line">response.setContentLength((<span class="keyword">int</span>)size);</span><br></pre></td></tr></table></figure>
+
+<ol start="4">
+<li>发送文件</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">//通过response获取输出流，用于向浏览器输出内容</span></span><br><span class="line">ServletOutputStream out = response.getOutputStream();</span><br><span class="line"><span class="comment">//将文件输入流通过输出流输出</span></span><br><span class="line"><span class="keyword">byte</span>[] b = <span class="keyword">new</span> <span class="keyword">byte</span>[<span class="number">1024</span>];</span><br><span class="line"><span class="keyword">int</span> len = <span class="number">0</span>;</span><br><span class="line"><span class="keyword">while</span>((len=is.read(b))&gt; <span class="number">0</span>)&#123;</span><br><span class="line">	out.write(b, <span class="number">0</span>, len);</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//最后不要忘记关闭输入流，输出流由Tomcat自己处理，我们不用手动关闭</span></span><br><span class="line">is.close();</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="乱码："><a href="#乱码：" class="headerlink" title="乱码："></a>乱码：</h2><p>至此实际上文件下载的主要功能都已经完成。但是还有一个问题我们这里没有体现出来，因为目前我们的文件名使用的是纯英文的，没有乱码问题。这里如果我们要使用中文文件名的话，毫无疑问会出现乱码问题。</p>
+<p>解决此问题的方法很简单，在获取文件名之后为文件名进行编码：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">filename = java.net.URLEncoder.encode(filename,<span class="string">"utf-8"</span>);</span><br></pre></td></tr></table></figure>
+
+<p>但是注意这里火狐浏览器比较特殊，因为他默认是以BASE64解码的，所以这块如果需要考虑火狐的问题的话还需要特殊处理一下。</p>
+<ol>
+<li>先要获取客户端信息（通过获取请求头中的User-Agent信息）</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">//获取客户端信息</span></span><br><span class="line">String ua = request.getHeader(<span class="string">"User-Agent"</span>);</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>然后判断浏览器版本，做不同的处理（通过判断头信息中是否包含Firefox字符串来判断浏览器版本）</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">//判断客户端是否为火狐</span></span><br><span class="line"><span class="keyword">if</span>(ua.contains(<span class="string">"Firefox"</span>))&#123;</span><br><span class="line">	<span class="comment">//若为火狐使用BASE64编码</span></span><br><span class="line">	filename = <span class="string">"=?utf-8?B?"</span>+<span class="keyword">new</span> BASE64Encoder()</span><br><span class="line">.encode(filename.getBytes(<span class="string">"utf-8"</span>))+<span class="string">"?="</span>;</span><br><span class="line">&#125;<span class="keyword">else</span>&#123;</span><br><span class="line">	<span class="comment">//否则使用UTF-8</span></span><br><span class="line">	filename = URLEncoder.encode(filename,<span class="string">"utf-8"</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+</div><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">Uncle He</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://www.unclehe.net/2020/07/15/java-file-upload/">https://www.unclehe.net/2020/07/15/java-file-upload/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://www.unclehe.net" target="_blank">Uncle He</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/JavaWeb/">JavaWeb</a></div><div class="post_share"><div class="social-share" data-image="https://cdn.jsdelivr.net/gh/uncle-he/blog-resource/img/cover/java.jpeg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css"/><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js"></script></div></div><div class="post-reward"><a class="reward-button button--primary button--animated"> <i class="fa fa-qrcode"></i> 打赏<div class="reward-main"><ul class="reward-all"><li class="reward-item"><img class="post-qr-code__img" src="https://cdn.jsdelivr.net/gh/uncle-he/blog-resource/img/wechat.jpg" alt="wechat"/><div class="post-qr-code__desc">wechat</div></li><li class="reward-item"><img class="post-qr-code__img" src="https://cdn.jsdelivr.net/gh/uncle-he/blog-resource/img/alipay.jpg" alt="alipay"/><div class="post-qr-code__desc">alipay</div></li></ul></div></a></div><nav class="pagination_post" id="pagination"><div class="next-post pull-full"><a href="/2020/07/14/java-ajax/"><img class="next_cover" data-src="https://cdn.jsdelivr.net/gh/uncle-he/blog-resource/img/cover/java.jpeg" onerror="onerror=null;src='/img/404.jpg'"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">Ajax</div></div></a></div></nav><div class="relatedPosts"><div class="relatedPosts_headline"><i class="fa fa-fw fa-thumbs-up" aria-hidden="true"></i><span> 相关推荐</span></div><div class="relatedPosts_list"><div class="relatedPosts_item"><a href="/2020/07/14/java-ajax/" title="Ajax"><img class="relatedPosts_cover" data-src="https://cdn.jsdelivr.net/gh/uncle-he/blog-resource/img/cover/java.jpeg"><div class="relatedPosts_main is-center"><div class="relatedPosts_date"><i class="fa fa-calendar fa-fw" aria-hidden="true"></i> 2020-07-14</div><div class="relatedPosts_title">Ajax</div></div></a></div><div class="relatedPosts_item"><a href="/2020/07/11/java-cookie-session/" title="Cookie和Session"><img class="relatedPosts_cover" data-src="https://cdn.jsdelivr.net/gh/uncle-he/blog-resource/img/cover/java.jpeg"><div class="relatedPosts_main is-center"><div class="relatedPosts_date"><i class="fa fa-calendar fa-fw" aria-hidden="true"></i> 2020-07-11</div><div class="relatedPosts_title">Cookie和Session</div></div></a></div><div class="relatedPosts_item"><a href="/2020/07/09/java-el/" title="EL表达式"><img class="relatedPosts_cover" data-src="https://cdn.jsdelivr.net/gh/uncle-he/blog-resource/img/cover/java.jpeg"><div class="relatedPosts_main is-center"><div class="relatedPosts_date"><i class="fa fa-calendar fa-fw" aria-hidden="true"></i> 2020-07-09</div><div class="relatedPosts_title">EL表达式</div></div></a></div><div class="relatedPosts_item"><a href="/2020/07/12/java-filter/" title="Filter"><img class="relatedPosts_cover" data-src="https://cdn.jsdelivr.net/gh/uncle-he/blog-resource/img/cover/java.jpeg"><div class="relatedPosts_main is-center"><div class="relatedPosts_date"><i class="fa fa-calendar fa-fw" aria-hidden="true"></i> 2020-07-12</div><div class="relatedPosts_title">Filter</div></div></a></div><div class="relatedPosts_item"><a href="/2020/07/08/java-http/" title="HTTP"><img class="relatedPosts_cover" data-src="https://cdn.jsdelivr.net/gh/uncle-he/blog-resource/img/cover/http.jpg"><div class="relatedPosts_main is-center"><div class="relatedPosts_date"><i class="fa fa-calendar fa-fw" aria-hidden="true"></i> 2020-07-08</div><div class="relatedPosts_title">HTTP</div></div></a></div><div class="relatedPosts_item"><a href="/2020/07/09/java-jsp/" title="JSP"><img class="relatedPosts_cover" data-src="https://cdn.jsdelivr.net/gh/uncle-he/blog-resource/img/cover/java.jpeg"><div class="relatedPosts_main is-center"><div class="relatedPosts_date"><i class="fa fa-calendar fa-fw" aria-hidden="true"></i> 2020-07-09</div><div class="relatedPosts_title">JSP</div></div></a></div></div><div class="clear_both"></div></div><hr><div id="post-comment"><div class="comment_headling"><i class="fa fa-comments fa-fw" aria-hidden="true"></i><span> 评论</span></div><div class="vcomment" id="vcomment"></div><script src="https://cdn.jsdelivr.net/npm/valine/dist/Valine.min.js"></script><script>var requestSetting = function (from,set) {
+  var from = from
+  var setting = set.split(',').filter(function(item){
+  return from.indexOf(item) > -1
+  });
+  setting = setting.length == 0 ? from :setting;
+  return setting
+}
+
+var guestInfo = requestSetting(['nick','mail','link'],'nick,mail,link')
+var requiredFields = requestSetting(['nick','mail','link'],'nick,mail')
+
+window.valine = new Valine({
+  el:'#vcomment',
+  appId: 'kJLrzEh54hbM7O4kjF6VhlAt-MdYXbMMI',
+  appKey: 'wbsLMRTmGNJ2wpVv2Xtvo17B',
+  notify: false,
+  verify: false,
+  placeholder: '昵称请填写QQ号会自动获取头像和昵称...',
+  avatar: 'monsterid',
+  meta: guestInfo,
+  pageSize: '10',
+  lang: 'zh-CN',
+  recordIP: false,
+  serverURLs: '',
+  emojiCDN: '',
+  emojiMaps: "",
+  enableQQ: true,
+  requiredFields: requiredFields
+});</script></div></article></main><footer id="footer" style="background-image: url(https://cdn.jsdelivr.net/gh/uncle-he/blog-resource/img/cover/java.jpeg)" data-type="photo"><div id="footer-wrap"><div class="copyright">&copy;2020 By Uncle He</div><div class="framework-info"><span>驱动 </span><a href="https://hexo.io" target="_blank" rel="noopener"><span>Hexo</span></a><span class="footer-separator">|</span><span>主题 </span><a href="https://github.com/jerryc127/hexo-theme-butterfly" target="_blank" rel="noopener"><span>Butterfly</span></a></div><div class="footer_custom_text">Hi, welcome to my <a href="https://www.unclehe.net/">blog</a>!</div></div></footer></div><section class="rightside" id="rightside"><div id="rightside-config-hide"><i class="fa fa-book" id="readmode" title="阅读模式"></i><i class="fa fa-plus" id="font_plus" title="放大字体"></i><i class="fa fa-minus" id="font_minus" title="缩小字体"></i><a class="translate_chn_to_cht" id="translateLink" href="javascript:translatePage();" title="简繁转换" target="_self">简</a><i class="darkmode far fa-moon" id="darkmode" title="夜间模式"></i></div><div id="rightside-config-show"><div id="rightside_config" title="设置"><i class="fa fa-cog" aria-hidden="true"></i></div><a id="to_comment" href="#post-comment" title="直达评论"><i class="scroll_to_comment fa fa-comments">  </i></a><i class="fa fa-list-ul close" id="mobile-toc-button" title="目录" aria-hidden="true"></i><i class="fa fa-arrow-up" id="go-up" title="回到顶部" aria-hidden="true"></i></div></section><div class="search-dialog" id="local-search"><div class="search-dialog__title" id="local-search-title">本地搜索</div><div id="local-input-panel"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div></div><hr/><div id="local-search-results"><div id="local-hits"></div><div id="local-stats"><div class="local-search-stats__hr" id="hr"><span>由</span> <a href="https://github.com/wzpan/hexo-generator-search" target="_blank" rel="noopener" style="color:#49B1F5;">hexo-generator-search</a>
+ <span>提供支持</span></div></div></div><span class="search-close-button"><i class="fa fa-times"></i></span></div><div class="search-mask"></div><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="/js/tw_cn.js"></script><script src="https://cdn.jsdelivr.net/npm/medium-zoom/dist/medium-zoom.min.js"></script><script src="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.js"></script><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><script src="https://cdn.jsdelivr.net/npm/instant.page@3/instantpage.min.js" type="module"></script><script src="https://cdn.jsdelivr.net/npm/lozad/dist/lozad.min.js"></script><script src="/js/search/local-search.js"></script><script src="https://cdn.jsdelivr.net/gh/uncle-he/blog-resource/js/customjs.js"></script></body></html>
